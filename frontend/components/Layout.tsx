@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { CreditCard, Home, Target, Bot } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '../contexts/AuthContext';
+import AuthModal from './AuthModal';
+import UserMenu from './UserMenu';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,6 +12,9 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const { user, isLoading } = useAuth();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<'signin' | 'signup'>('signin');
 
   const navItems = [
     { path: '/', icon: Home, label: 'Home' },
@@ -15,6 +22,11 @@ export default function Layout({ children }: LayoutProps) {
     { path: '/recommendations', icon: Target, label: 'Optimize' },
     { path: '/ai-chat', icon: Bot, label: 'AI Chat' },
   ];
+
+  const openAuthModal = (mode: 'signin' | 'signup') => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -32,6 +44,33 @@ export default function Layout({ children }: LayoutProps) {
                 </h1>
                 <p className="text-xs text-gray-500 -mt-1">Your Wallet's Wingman</p>
               </div>
+            </div>
+
+            {/* Auth Section */}
+            <div className="flex items-center space-x-3">
+              {isLoading ? (
+                <div className="w-8 h-8 animate-pulse bg-gray-200 rounded-full"></div>
+              ) : user ? (
+                <UserMenu />
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => openAuthModal('signin')}
+                    className="text-gray-600 hover:text-teal-600"
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => openAuthModal('signup')}
+                    className="bg-teal-500 hover:bg-teal-600"
+                  >
+                    Register
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -66,6 +105,13 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
       </nav>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode={authModalMode}
+      />
     </div>
   );
 }

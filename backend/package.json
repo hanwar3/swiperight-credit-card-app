@@ -7,6 +7,7 @@
     "build": "cd ../frontend \u0026\u0026 bun install \u0026\u0026 vite build --outDir=../backend/frontend/dist"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "encore.dev": "^1.48.8"
   },
   "devDependencies": {

@@ -471,9 +471,12 @@ function ComprehensiveCardComponent({
   isAddingToPortfolio: boolean;
   isPopular?: boolean;
 }) {
-  const bestCategory = card.categories.reduce((best, current) => 
-    current.cashbackRate > best.cashbackRate ? current : best
-  );
+  // Fix the reduce error by providing a default value and checking for empty array
+  const bestCategory = card.categories && card.categories.length > 0 
+    ? card.categories.reduce((best, current) => 
+        current.cashbackRate > best.cashbackRate ? current : best
+      )
+    : { cashbackRate: 0, category: 'N/A', id: 0, isRotating: false };
 
   const getNetworkColor = (network: string) => {
     switch (network.toLowerCase()) {
@@ -564,20 +567,28 @@ function ComprehensiveCardComponent({
         <div className="space-y-1">
           <span className="text-sm font-medium text-gray-700">Categories:</span>
           <div className="flex flex-wrap gap-1">
-            {card.categories.slice(0, 3).map((category, index) => (
-              <Badge key={index} variant="outline" className="text-xs">
-                {category.cashbackRate}% {category.category}
-              </Badge>
-            ))}
-            {card.categories.length > 3 && (
+            {card.categories && card.categories.length > 0 ? (
+              <>
+                {card.categories.slice(0, 3).map((category, index) => (
+                  <Badge key={index} variant="outline" className="text-xs">
+                    {category.cashbackRate}% {category.category}
+                  </Badge>
+                ))}
+                {card.categories.length > 3 && (
+                  <Badge variant="outline" className="text-xs">
+                    +{card.categories.length - 3} more
+                  </Badge>
+                )}
+              </>
+            ) : (
               <Badge variant="outline" className="text-xs">
-                +{card.categories.length - 3} more
+                No categories available
               </Badge>
             )}
           </div>
         </div>
 
-        {card.features.length > 0 && (
+        {card.features && card.features.length > 0 && (
           <div className="space-y-1">
             <span className="text-sm font-medium text-gray-700">Features:</span>
             <div className="text-xs text-gray-600">
@@ -625,9 +636,13 @@ function ComprehensiveCardComponent({
 
 function PortfolioCardComponent({ userCard }: { userCard: UserCard }) {
   const { card } = userCard;
-  const bestCategory = card.categories.reduce((best, current) => 
-    current.cashbackRate > best.cashbackRate ? current : best
-  );
+  
+  // Fix the reduce error by providing a default value and checking for empty array
+  const bestCategory = card.categories && card.categories.length > 0 
+    ? card.categories.reduce((best, current) => 
+        current.cashbackRate > best.cashbackRate ? current : best
+      )
+    : { cashbackRate: 0, category: 'N/A', id: 0, isRotating: false };
 
   const getNetworkColor = (network: string) => {
     switch (network.toLowerCase()) {
@@ -694,14 +709,22 @@ function PortfolioCardComponent({ userCard }: { userCard: UserCard }) {
         <div className="space-y-1">
           <span className="text-sm font-medium text-gray-700">Categories:</span>
           <div className="flex flex-wrap gap-1">
-            {card.categories.slice(0, 3).map((category, index) => (
-              <Badge key={index} variant="outline" className="text-xs">
-                {category.cashbackRate}% {category.category}
-              </Badge>
-            ))}
-            {card.categories.length > 3 && (
+            {card.categories && card.categories.length > 0 ? (
+              <>
+                {card.categories.slice(0, 3).map((category, index) => (
+                  <Badge key={index} variant="outline" className="text-xs">
+                    {category.cashbackRate}% {category.category}
+                  </Badge>
+                ))}
+                {card.categories.length > 3 && (
+                  <Badge variant="outline" className="text-xs">
+                    +{card.categories.length - 3} more
+                  </Badge>
+                )}
+              </>
+            ) : (
               <Badge variant="outline" className="text-xs">
-                +{card.categories.length - 3} more
+                No categories available
               </Badge>
             )}
           </div>

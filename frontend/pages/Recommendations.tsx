@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Search, Target, TrendingUp } from 'lucide-react';
+import { Search, Target, TrendingUp, Star, Gift, ExternalLink } from 'lucide-react';
 import backend from '~backend/client';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import type { Card as CreditCard } from '~backend/cards/list';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '../contexts/AuthContext';
+import type { CardRecommendation } from '~backend/cards/recommend';
 
 const popularCategories = [
   'Groceries', 'Gas', 'Dining', 'Travel', 'Shopping', 'Streaming'
@@ -15,11 +17,24 @@ const popularCategories = [
 export default function Recommendations() {
   const [category, setCategory] = useState('');
   const [searchTriggered, setSearchTriggered] = useState(false);
+  const { user } = useAuth();
 
   const { data: recommendationsData, isLoading } = useQuery({
-    queryKey: ['recommendations', category],
-    queryFn: () => backend.cards.recommend({ category }),
+    queryKey: ['recommendations', category, user?.userId],
+    queryFn: () => backend.cards.recommend({ 
+      category, 
+      userId: user?.userId 
+    }),
     enabled: searchTriggered && category.length > 0,
+  });
+
+  const { data: merchantOffersData } = useQuery({
+    queryKey: ['merchant-offers', user?.userId, category],
+    queryFn: () => user ? backend.cards.getRelevantOffers({ 
+      userId: user.userId, 
+      category 
+    }) : null,
+    enabled: !!user && searchTriggered && category.length > 0,
   });
 
   const handleSearch = () => {
@@ -33,7 +48,9 @@ export default function Recommendations() {
     setSearchTriggered(true);
   };
 
-  const cards = recommendationsData?.cards || [];
+  const allRecommendations = recommendationsData?.cards || [];
+  const portfolioRecommendations = recommendationsData?.portfolioRecommendations || [];
+  const merchantOffers = merchantOffersData?.offers || [];
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -97,7 +114,7 @@ export default function Recommendations() {
         </div>
       </div>
 
-      {/* Results */}
+      {/* Loading */}
       {isLoading && (
         <div className="space-y-4">
           <div className="text-center">
@@ -107,7 +124,8 @@ export default function Recommendations() {
         </div>
       )}
 
-      {searchTriggered && !isLoading && cards.length > 0 && (
+      {/* Results */}
+      {searchTriggered && !isLoading && allRecommendations.length > 0 && (
         <div className="space-y-6">
           <div className="text-center">
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
@@ -116,15 +134,98 @@ export default function Recommendations() {
             <p className="text-gray-600">Ranked by cashback rate and value</p>
           </div>
 
-          <div className="space-y-4">
-            {cards.map((card, index) => (
-              <RecommendationCard key={card.id} card={card} rank={index + 1} category={category} />
-            ))}
-          </div>
+          {/* Merchant Offers */}
+          {merchantOffers.length > 0 && (
+            <Card className="border-0 bg-gradient-to-r from-orange-50 to-red-50 border-orange-200">
+              <CardHeader>
+                <div className="flex items-center space-x-2">
+                  <Gift className="h-5 w-5 text-orange-600" />
+                  <h3 className="font-semibold text-orange-900">Special Merchant Offers</h3>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {merchantOffers.slice(0, 3).map((offer) => (
+                  <div key={offer.id} className="flex items-center justify-between p-3 bg-white rounded-lg">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-medium text-gray-900">{offer.merchantName}</span>
+                        <Badge className="bg-orange-100 text-orange-700">{offer.cardName}</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">{offer.offerDescription}</p>
+                      {offer.endDate && (
+                        <p className="text-xs text-orange-600 mt-1">
+                          Valid until {new Date(offer.endDate).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      {offer.isActivated ? (
+                        <Badge className="bg-green-100 text-green-700">Activated</Badge>
+                      ) : (
+                        <Badge variant="outline">Not Activated</Badge>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {merchantOffers.length > 3 && (
+                  <p className="text-sm text-gray-600 text-center">
+                    +{merchantOffers.length - 3} more offers available
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Recommendations Tabs */}
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="all">All Cards</TabsTrigger>
+              <TabsTrigger value="portfolio" disabled={!user || portfolioRecommendations.length === 0}>
+                From Your Portfolio ({portfolioRecommendations.length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="all" className="space-y-4">
+              {allRecommendations.map((recommendation, index) => (
+                <RecommendationCard 
+                  key={recommendation.card.id} 
+                  recommendation={recommendation} 
+                  rank={index + 1} 
+                  category={category} 
+                />
+              ))}
+            </TabsContent>
+
+            <TabsContent value="portfolio" className="space-y-4">
+              {portfolioRecommendations.length > 0 ? (
+                <>
+                  <div className="text-center mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      Best Cards from Your Portfolio
+                    </h3>
+                    <p className="text-gray-600">These are the cards you already have that work best for {category}</p>
+                  </div>
+                  {portfolioRecommendations.map((recommendation, index) => (
+                    <RecommendationCard 
+                      key={recommendation.card.id} 
+                      recommendation={recommendation} 
+                      rank={index + 1} 
+                      category={category}
+                      isPortfolioCard={true}
+                    />
+                  ))}
+                </>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No cards in your portfolio match this category.</p>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       )}
 
-      {searchTriggered && !isLoading && cards.length === 0 && category && (
+      {searchTriggered && !isLoading && allRecommendations.length === 0 && category && (
         <div className="text-center py-12">
           <Target className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No specific recommendations found</h3>
@@ -140,26 +241,46 @@ export default function Recommendations() {
   );
 }
 
-function RecommendationCard({ card, rank, category }: { card: CreditCard; rank: number; category: string }) {
-  const relevantCategory = card.categories.find(cat => 
-    cat.category.toLowerCase().includes(category.toLowerCase()) ||
-    cat.category.toLowerCase() === 'all purchases'
-  ) || card.categories[0];
-
+function RecommendationCard({ 
+  recommendation, 
+  rank, 
+  category, 
+  isPortfolioCard = false 
+}: { 
+  recommendation: CardRecommendation; 
+  rank: number; 
+  category: string;
+  isPortfolioCard?: boolean;
+}) {
+  const { card, relevantCategory, isInPortfolio, portfolioNickname, relevantOffers } = recommendation;
   const isTopChoice = rank === 1;
+
+  const getNetworkColor = (network: string) => {
+    switch (network.toLowerCase()) {
+      case 'visa': return 'bg-blue-100 text-blue-700';
+      case 'mastercard': return 'bg-red-100 text-red-700';
+      case 'american express': return 'bg-green-100 text-green-700';
+      case 'discover': return 'bg-orange-100 text-orange-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
 
   return (
     <Card className={`transition-all duration-300 border-0 ${
-      isTopChoice 
+      isTopChoice && !isPortfolioCard
         ? 'bg-gradient-to-r from-teal-50 to-green-50 ring-2 ring-teal-200' 
+        : isPortfolioCard
+        ? 'bg-gradient-to-r from-blue-50 to-indigo-50 ring-2 ring-blue-200'
         : 'bg-white hover:shadow-md'
     }`}>
       <CardContent className="p-6">
         <div className="flex items-start space-x-4">
           {/* Rank Badge */}
           <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-            isTopChoice 
+            isTopChoice && !isPortfolioCard
               ? 'bg-gradient-to-r from-teal-500 to-green-500 text-white' 
+              : isPortfolioCard
+              ? 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white'
               : 'bg-gray-100 text-gray-600'
           }`}>
             {rank}
@@ -184,14 +305,33 @@ function RecommendationCard({ card, rank, category }: { card: CreditCard; rank: 
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-semibold text-gray-900 flex items-center space-x-2">
-                  <span>{card.name}</span>
-                  {isTopChoice && (
+                  <span>{portfolioNickname || card.name}</span>
+                  {isTopChoice && !isPortfolioCard && (
                     <Badge className="bg-gradient-to-r from-teal-500 to-green-500 text-white">
+                      <Star className="h-3 w-3 mr-1" />
                       Best Choice
                     </Badge>
                   )}
+                  {isPortfolioCard && (
+                    <Badge className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
+                      Your Card
+                    </Badge>
+                  )}
+                  {isInPortfolio && !isPortfolioCard && (
+                    <Badge className="bg-green-100 text-green-700">
+                      In Portfolio
+                    </Badge>
+                  )}
                 </h3>
-                <p className="text-sm text-gray-600">{card.issuer}</p>
+                {portfolioNickname && (
+                  <p className="text-xs text-gray-500">{card.name}</p>
+                )}
+                <div className="flex items-center space-x-2 mt-1">
+                  <p className="text-sm text-gray-600">{card.issuer}</p>
+                  <Badge className={`text-xs ${getNetworkColor(card.network)}`}>
+                    {card.network}
+                  </Badge>
+                </div>
               </div>
               
               <div className="text-right">
@@ -215,6 +355,34 @@ function RecommendationCard({ card, rank, category }: { card: CreditCard; rank: 
                 <span className="text-orange-600">
                   Rotating category valid until {new Date(relevantCategory.validUntil).toLocaleDateString()}
                 </span>
+              </div>
+            )}
+
+            {/* Merchant Offers */}
+            {relevantOffers.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Gift className="h-4 w-4 text-orange-500" />
+                  <span className="text-sm font-medium text-gray-700">Special Offers</span>
+                </div>
+                <div className="space-y-1">
+                  {relevantOffers.slice(0, 2).map((offer) => (
+                    <div key={offer.id} className="text-xs bg-orange-50 p-2 rounded border border-orange-200">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-orange-900">{offer.merchantName}</span>
+                        {offer.isActivated ? (
+                          <Badge className="bg-green-100 text-green-700 text-xs">Activated</Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs">Not Activated</Badge>
+                        )}
+                      </div>
+                      <p className="text-orange-700 mt-1">{offer.offerDescription}</p>
+                    </div>
+                  ))}
+                  {relevantOffers.length > 2 && (
+                    <p className="text-xs text-gray-600">+{relevantOffers.length - 2} more offers</p>
+                  )}
+                </div>
               </div>
             )}
 

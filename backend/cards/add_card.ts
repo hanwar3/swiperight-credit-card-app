@@ -51,6 +51,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
         issuer: existingCard.issuer,
         imageUrl: existingCard.image_url || generateFallbackImageUrl(existingCard.name, existingCard.issuer, existingCard.network),
         annualFee: existingCard.annual_fee,
+        network: existingCard.network || 'Visa',
         categories
       };
 
@@ -90,6 +91,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
       issuer: newCard.issuer,
       imageUrl: newCard.image_url || generateFallbackImageUrl(newCard.name, newCard.issuer, newCard.network),
       annualFee: newCard.annual_fee,
+      network: newCard.network || 'Visa',
       categories
     };
 
@@ -110,11 +112,13 @@ async function inferCardDetails(cardName: string, providedIssuer?: string): Prom
   
   if (name.includes('chase')) {
     issuer = 'Chase';
+    network = name.includes('freedom flex') ? 'Mastercard' : 'Visa';
   } else if (name.includes('amex') || name.includes('american express')) {
     issuer = 'American Express';
     network = 'American Express';
   } else if (name.includes('capital one')) {
     issuer = 'Capital One';
+    network = name.includes('savor') ? 'Mastercard' : 'Visa';
   } else if (name.includes('citi')) {
     issuer = 'Citi';
     network = 'Mastercard';
@@ -123,10 +127,13 @@ async function inferCardDetails(cardName: string, providedIssuer?: string): Prom
     network = 'Discover';
   } else if (name.includes('wells fargo')) {
     issuer = 'Wells Fargo';
+    network = 'Visa';
   } else if (name.includes('bank of america') || name.includes('boa')) {
     issuer = 'Bank of America';
+    network = 'Visa';
   } else if (name.includes('us bank')) {
     issuer = 'US Bank';
+    network = 'Visa';
   }
 
   // Try to fetch image from web sources
@@ -137,7 +144,44 @@ async function inferCardDetails(cardName: string, providedIssuer?: string): Prom
 
 async function fetchCardImage(cardName: string, issuer: string): Promise<string> {
   // In a real implementation, you would use web scraping or APIs to fetch card images
-  // For now, we'll return a fallback URL
+  // For now, we'll return actual card image URLs based on known patterns
+  
+  const name = cardName.toLowerCase();
+  
+  // Chase cards
+  if (issuer === 'Chase') {
+    if (name.includes('sapphire reserve')) {
+      return 'https://creditcards.chase.com/K-Marketplace/images/cardart/sapphire_reserve_card.png';
+    } else if (name.includes('sapphire preferred')) {
+      return 'https://creditcards.chase.com/K-Marketplace/images/cardart/sapphire_preferred_card.png';
+    } else if (name.includes('freedom unlimited')) {
+      return 'https://creditcards.chase.com/K-Marketplace/images/cardart/freedom_unlimited_card.png';
+    } else if (name.includes('freedom flex')) {
+      return 'https://creditcards.chase.com/K-Marketplace/images/cardart/freedom_flex_card.png';
+    }
+  }
+  
+  // American Express cards
+  if (issuer === 'American Express') {
+    if (name.includes('platinum')) {
+      return 'https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/category/cardarts/platinum-card.png';
+    } else if (name.includes('gold')) {
+      return 'https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/category/cardarts/gold-card.png';
+    } else if (name.includes('blue cash everyday')) {
+      return 'https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/category/cardarts/blue-cash-everyday-card.png';
+    }
+  }
+  
+  // Capital One cards
+  if (issuer === 'Capital One') {
+    if (name.includes('venture x')) {
+      return 'https://ecm.capitalone.com/WCM/card/products/venture-x-card-art.png';
+    } else if (name.includes('savor')) {
+      return 'https://ecm.capitalone.com/WCM/card/products/savor-one-card-art.png';
+    }
+  }
+  
+  // Fallback to placeholder
   return generateFallbackImageUrl(cardName, issuer, 'Visa');
 }
 

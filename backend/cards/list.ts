@@ -7,6 +7,7 @@ export interface Card {
   issuer: string;
   imageUrl: string;
   annualFee: number;
+  network: string;
   categories: CardCategory[];
 }
 
@@ -29,7 +30,7 @@ export const list = api<void, ListCardsResponse>(
     const cards: Card[] = [];
     
     const cardRows = await cardsDB.queryAll`
-      SELECT id, name, issuer, image_url, annual_fee 
+      SELECT id, name, issuer, image_url, annual_fee, network
       FROM cards 
       ORDER BY name
     `;
@@ -56,6 +57,7 @@ export const list = api<void, ListCardsResponse>(
         issuer: cardRow.issuer,
         imageUrl: cardRow.image_url,
         annualFee: cardRow.annual_fee,
+        network: cardRow.network || 'Visa',
         categories
       });
     }

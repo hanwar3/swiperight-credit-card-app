@@ -1,6 +1,9 @@
 import { api, APIError } from "encore.dev/api";
+import { secret } from "encore.dev/config";
 import { cardsDB } from "./db";
 import type { Card, CardCategory } from "./list";
+
+const rewardsApiKey = secret("RewardsApiKey");
 
 export interface AddCardRequest {
   name: string;
@@ -64,25 +67,51 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
     let fromExternalApi = false;
 
     // Try to fetch from external API if requested
-    // if (req.useExternalApi) {
-    //   try {
-    //     const externalResponse = await fetch('http://localhost:4000/cards/fetch-external', {
-    //       method: 'POST',
-    //       headers: { 'Content-Type': 'application/json' },
-    //       body: JSON.stringify({ cardName })
-    //     });
+    if (req.useExternalApi) {
+      try {
+        const searchResponse = await fetch(`https://rewards-credit-card-api.p.rapidapi.com/creditcard-detail-namesearch/${encodeURIComponent(cardName)}`, {
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key': rewardsApiKey(),
+            'X-RapidAPI-Host': 'rewards-credit-card-api.p.rapidapi.com'
+          }
+        });
 
-    //     if (externalResponse.ok) {
-    //       const externalData = await externalResponse.json();
-    //       if (externalData.found && externalData.cardData) {
-    //         cardData = externalData.cardData;
-    //         fromExternalApi = true;
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.error('Failed to fetch from external API:', error);
-    //   }
-    // }
+        if (searchResponse.ok) {
+          const searchData = await searchResponse.json();
+          if (searchData && searchData.length > 0) {
+            const cardKey = searchData[0].cardKey;
+            const imageResponse = await fetch(`https://rewards-credit-card-api.p.rapidapi.com/creditcard-card-image/${cardKey}`, {
+              method: 'GET',
+              headers: {
+                'X-RapidAPI-Key': rewardsApiKey(),
+                'X-RapidAPI-Host': 'rewards-credit-card-api.p.rapidapi.com'
+              }
+            });
+
+            if (imageResponse.ok) {
+              const imageData = await imageResponse.json();
+              if (imageData && imageData.length > 0 && imageData[0].cardImageUrl) {
+                const { issuer, network } = await inferCardDetails(cardName, req.issuer);
+                cardData = {
+                  name: cardName,
+                  issuer,
+                  network,
+                  imageUrl: imageData[0].cardImageUrl,
+                  annualFee: 0, // These values would ideally come from the API
+                  categories: [],
+                  features: [],
+                  creditRange: 'Good to Excellent'
+                };
+                fromExternalApi = true;
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch from external API:', error);
+      }
+    }
 
     // If no external data, use manual inference
     if (!cardData) {

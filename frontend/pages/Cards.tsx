@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Search, Filter, Plus, CreditCard as CreditCardIcon, User, Wallet } from 'lucide-react';
+import { Search, Filter, Plus, CreditCard as CreditCardIcon, User, Wallet, Star, ExternalLink, TrendingUp } from 'lucide-react';
 import backend from '~backend/client';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,29 +9,50 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { useAuth } from '../contexts/AuthContext';
-import type { Card as CreditCard } from '~backend/cards/list';
+import type { ComprehensiveCard } from '~backend/cards/comprehensive';
 import type { UserCard } from '~backend/cards/portfolio';
 
 export default function Cards() {
+  const [activeTab, setActiveTab] = useState('comprehensive');
+  
+  // Comprehensive cards filters
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIssuer, setSelectedIssuer] = useState<string>('');
   const [selectedNetwork, setSelectedNetwork] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [maxAnnualFee, setMaxAnnualFee] = useState<number[]>([500]);
+  const [minCashback, setMinCashback] = useState<number[]>([0]);
+  
+  // Add card dialog
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [newCardName, setNewCardName] = useState('');
   const [newCardIssuer, setNewCardIssuer] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
+  const [useExternalApi, setUseExternalApi] = useState(true);
 
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
-  const { data: cardsData, isLoading } = useQuery({
-    queryKey: ['cards'],
-    queryFn: () => backend.cards.list(),
+  // Comprehensive cards query
+  const { data: comprehensiveData, isLoading: isComprehensiveLoading } = useQuery({
+    queryKey: ['comprehensive-cards', searchQuery, selectedIssuer, selectedNetwork, selectedCategory, maxAnnualFee[0], minCashback[0]],
+    queryFn: () => backend.cards.getComprehensiveCards({
+      query: searchQuery || undefined,
+      issuer: selectedIssuer || undefined,
+      network: selectedNetwork || undefined,
+      category: selectedCategory || undefined,
+      maxAnnualFee: maxAnnualFee[0],
+      minCashback: minCashback[0],
+      limit: 50
+    }),
   });
 
+  // User portfolio query
   const { data: portfolioData, isLoading: isPortfolioLoading } = useQuery({
     queryKey: ['portfolio', user?.userId],
     queryFn: () => user ? backend.cards.getUserPortfolio({ userId: user.userId }) : null,
@@ -39,17 +60,17 @@ export default function Cards() {
   });
 
   const addCardMutation = useMutation({
-    mutationFn: (data: { name: string; issuer?: string }) => 
+    mutationFn: (data: { name: string; issuer?: string; useExternalApi?: boolean }) => 
       backend.cards.addCard(data),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['cards'] });
+      queryClient.invalidateQueries({ queryKey: ['comprehensive-cards'] });
       setIsAddDialogOpen(false);
       setNewCardName('');
       setNewCardIssuer('');
       toast({
         title: data.isNew ? "Card Added" : "Card Found",
         description: data.isNew 
-          ? `${data.card.name} has been added to the database.`
+          ? `${data.card.name} has been added to the database${data.fromExternalApi ? ' with data from RewardsCC API' : ''}.`
           : `${data.card.name} was already in our database.`,
       });
     },
@@ -87,18 +108,13 @@ export default function Cards() {
     },
   });
 
-  const cards = cardsData?.cards || [];
+  const comprehensiveCards = comprehensiveData?.cards || [];
+  const popularCards = comprehensiveData?.popularCards || [];
   const portfolioCards = portfolioData?.cards || [];
-  const issuers = [...new Set(cards.map(card => card.issuer))];
-  const networks = [...new Set(cards.map(card => card.network))];
-
-  const filteredCards = cards.filter(card => {
-    const matchesSearch = card.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         card.issuer.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesIssuer = !selectedIssuer || card.issuer === selectedIssuer;
-    const matchesNetwork = !selectedNetwork || card.network === selectedNetwork;
-    return matchesSearch && matchesIssuer && matchesNetwork;
-  });
+  
+  const issuers = [...new Set(comprehensiveCards.map(card => card.issuer))];
+  const networks = [...new Set(comprehensiveCards.map(card => card.network))];
+  const categories = ['Groceries', 'Gas', 'Dining', 'Travel', 'Shopping', 'Streaming', 'All Purchases'];
 
   const handleAddCard = () => {
     if (!newCardName.trim()) {
@@ -112,7 +128,8 @@ export default function Cards() {
 
     addCardMutation.mutate({
       name: newCardName.trim(),
-      issuer: newCardIssuer.trim() || undefined
+      issuer: newCardIssuer.trim() || undefined,
+      useExternalApi
     });
   };
 
@@ -133,31 +150,22 @@ export default function Cards() {
     return portfolioCards.some(pc => pc.card.id === cardId);
   };
 
-  if (isLoading) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <Card key={i} className="animate-pulse">
-              <CardContent className="p-6">
-                <div className="h-32 bg-gray-200 rounded mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedIssuer('');
+    setSelectedNetwork('');
+    setSelectedCategory('');
+    setMaxAnnualFee([500]);
+    setMinCashback([0]);
+  };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="text-center space-y-2">
+        <div className="space-y-2">
           <h1 className="text-3xl font-bold text-gray-900">Credit Cards</h1>
-          <p className="text-gray-600">Explore our comprehensive database of credit cards</p>
+          <p className="text-gray-600">Explore our comprehensive database and manage your portfolio</p>
         </div>
         
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -190,6 +198,14 @@ export default function Cards() {
                   onChange={(e) => setNewCardIssuer(e.target.value)}
                 />
               </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="useExternalApi"
+                  checked={useExternalApi}
+                  onCheckedChange={setUseExternalApi}
+                />
+                <Label htmlFor="useExternalApi">Use RewardsCC API for card details</Label>
+              </div>
               <div className="flex justify-end space-x-2">
                 <Button 
                   variant="outline" 
@@ -214,93 +230,178 @@ export default function Cards() {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="all" className="flex items-center space-x-2">
+          <TabsTrigger value="comprehensive" className="flex items-center space-x-2">
             <CreditCardIcon className="h-4 w-4" />
-            <span>All Cards</span>
+            <span>All Cards Database</span>
           </TabsTrigger>
           <TabsTrigger value="portfolio" className="flex items-center space-x-2" disabled={!user}>
             <Wallet className="h-4 w-4" />
-            <span>My Portfolio</span>
+            <span>My Cards Portfolio</span>
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all" className="space-y-4">
-          {/* Search and Filters */}
-          <div className="space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search cards or issuers..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 border-gray-200 focus:border-teal-500 focus:ring-teal-500"
-              />
+        <TabsContent value="comprehensive" className="space-y-6">
+          {/* Popular Cards Section */}
+          {popularCards.length > 0 && (
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                <h2 className="text-xl font-semibold text-gray-900">Popular Cards</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {popularCards.slice(0, 6).map((card) => (
+                  <ComprehensiveCardComponent 
+                    key={card.id} 
+                    card={card} 
+                    isInPortfolio={isCardInPortfolio(card.id)}
+                    onAddToPortfolio={() => handleAddToPortfolio(card.id)}
+                    showAddButton={!!user}
+                    isAddingToPortfolio={addToPortfolioMutation.isPending}
+                    isPopular={true}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Filters */}
+          <div className="space-y-4 bg-gray-50 p-4 rounded-lg">
+            <div className="flex items-center justify-between">
+              <h3 className="font-medium text-gray-900">Filters</h3>
+              <Button variant="ghost" size="sm" onClick={clearFilters}>
+                Clear All
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Search */}
+              <div className="space-y-2">
+                <Label>Search</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    placeholder="Card name or issuer..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+              </div>
+
+              {/* Issuer */}
+              <div className="space-y-2">
+                <Label>Issuer</Label>
+                <Select value={selectedIssuer} onValueChange={setSelectedIssuer}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Issuers" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Issuers</SelectItem>
+                    {issuers.map(issuer => (
+                      <SelectItem key={issuer} value={issuer}>{issuer}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Network */}
+              <div className="space-y-2">
+                <Label>Network</Label>
+                <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Networks" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Networks</SelectItem>
+                    {networks.map(network => (
+                      <SelectItem key={network} value={network}>{network}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Category */}
+              <div className="space-y-2">
+                <Label>Category</Label>
+                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Categories</SelectItem>
+                    {categories.map(category => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant={selectedIssuer === '' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedIssuer('')}
-                className={selectedIssuer === '' ? 'bg-teal-500 hover:bg-teal-600' : ''}
-              >
-                All Issuers
-              </Button>
-              {issuers.map(issuer => (
-                <Button
-                  key={issuer}
-                  variant={selectedIssuer === issuer ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedIssuer(issuer)}
-                  className={selectedIssuer === issuer ? 'bg-teal-500 hover:bg-teal-600' : ''}
-                >
-                  {issuer}
-                </Button>
-              ))}
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Annual Fee */}
+              <div className="space-y-2">
+                <Label>Max Annual Fee: ${maxAnnualFee[0]}</Label>
+                <Slider
+                  value={maxAnnualFee}
+                  onValueChange={setMaxAnnualFee}
+                  max={1000}
+                  step={25}
+                  className="w-full"
+                />
+              </div>
 
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant={selectedNetwork === '' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setSelectedNetwork('')}
-                className={selectedNetwork === '' ? 'bg-green-500 hover:bg-green-600' : ''}
-              >
-                All Networks
-              </Button>
-              {networks.map(network => (
-                <Button
-                  key={network}
-                  variant={selectedNetwork === network ? 'default' : 'outline'}
-                  size="sm"
-                  onClick={() => setSelectedNetwork(network)}
-                  className={selectedNetwork === network ? 'bg-green-500 hover:bg-green-600' : ''}
-                >
-                  {network}
-                </Button>
-              ))}
+              {/* Min Cashback */}
+              <div className="space-y-2">
+                <Label>Min Cashback Rate: {minCashback[0]}%</Label>
+                <Slider
+                  value={minCashback}
+                  onValueChange={setMinCashback}
+                  max={10}
+                  step={0.5}
+                  className="w-full"
+                />
+              </div>
             </div>
           </div>
 
-          {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredCards.map((card) => (
-              <CreditCardComponent 
-                key={card.id} 
-                card={card} 
-                isInPortfolio={isCardInPortfolio(card.id)}
-                onAddToPortfolio={() => handleAddToPortfolio(card.id)}
-                showAddButton={!!user}
-                isAddingToPortfolio={addToPortfolioMutation.isPending}
-              />
-            ))}
-          </div>
-
-          {filteredCards.length === 0 && (
+          {/* All Cards Grid */}
+          {isComprehensiveLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(9)].map((_, i) => (
+                <Card key={i} className="animate-pulse">
+                  <CardContent className="p-6">
+                    <div className="h-32 bg-gray-200 rounded mb-4"></div>
+                    <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : comprehensiveCards.length > 0 ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  All Cards ({comprehensiveData?.totalCount || 0})
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {comprehensiveCards.map((card) => (
+                  <ComprehensiveCardComponent 
+                    key={card.id} 
+                    card={card} 
+                    isInPortfolio={isCardInPortfolio(card.id)}
+                    onAddToPortfolio={() => handleAddToPortfolio(card.id)}
+                    showAddButton={!!user}
+                    isAddingToPortfolio={addToPortfolioMutation.isPending}
+                  />
+                ))}
+              </div>
+            </div>
+          ) : (
             <div className="text-center py-12">
               <Filter className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No cards found</h3>
-              <p className="text-gray-600">Try adjusting your search or filters</p>
+              <p className="text-gray-600">Try adjusting your filters</p>
             </div>
           )}
         </TabsContent>
@@ -308,8 +409,8 @@ export default function Cards() {
         <TabsContent value="portfolio" className="space-y-4">
           {user ? (
             isPortfolioLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[...Array(4)].map((_, i) => (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
                   <Card key={i} className="animate-pulse">
                     <CardContent className="p-6">
                       <div className="h-32 bg-gray-200 rounded mb-4"></div>
@@ -320,17 +421,24 @@ export default function Cards() {
                 ))}
               </div>
             ) : portfolioCards.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {portfolioCards.map((userCard) => (
-                  <PortfolioCardComponent key={userCard.id} userCard={userCard} />
-                ))}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    My Cards ({portfolioCards.length})
+                  </h3>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {portfolioCards.map((userCard) => (
+                    <PortfolioCardComponent key={userCard.id} userCard={userCard} />
+                  ))}
+                </div>
               </div>
             ) : (
               <div className="text-center py-12">
                 <Wallet className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No cards in portfolio</h3>
-                <p className="text-gray-600 mb-4">Add cards from the "All Cards" tab to start building your portfolio</p>
-                <Button onClick={() => setActiveTab('all')} className="bg-teal-500 hover:bg-teal-600">
+                <p className="text-gray-600 mb-4">Add cards from the "All Cards Database" tab to start building your portfolio</p>
+                <Button onClick={() => setActiveTab('comprehensive')} className="bg-teal-500 hover:bg-teal-600">
                   Browse All Cards
                 </Button>
               </div>
@@ -348,18 +456,20 @@ export default function Cards() {
   );
 }
 
-function CreditCardComponent({ 
+function ComprehensiveCardComponent({ 
   card, 
   isInPortfolio, 
   onAddToPortfolio, 
   showAddButton, 
-  isAddingToPortfolio 
+  isAddingToPortfolio,
+  isPopular = false
 }: { 
-  card: CreditCard; 
+  card: ComprehensiveCard; 
   isInPortfolio: boolean;
   onAddToPortfolio: () => void;
   showAddButton: boolean;
   isAddingToPortfolio: boolean;
+  isPopular?: boolean;
 }) {
   const bestCategory = card.categories.reduce((best, current) => 
     current.cashbackRate > best.cashbackRate ? current : best
@@ -376,42 +486,54 @@ function CreditCardComponent({
   };
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 border-0 bg-white">
+    <Card className={`group hover:shadow-lg transition-all duration-300 border-0 ${isPopular ? 'ring-2 ring-yellow-200 bg-gradient-to-br from-yellow-50 to-orange-50' : 'bg-white'}`}>
       <CardHeader className="pb-4">
-        <div className="flex items-center space-x-4">
-          <div className="w-16 h-10 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
-            {card.imageUrl ? (
-              <img 
-                src={card.imageUrl} 
-                alt={card.name}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  target.parentElement!.innerHTML = `<span class="text-xs font-medium text-gray-500">${card.issuer}</span>`;
-                }}
-              />
-            ) : (
-              <span className="text-xs font-medium text-gray-500">{card.issuer}</span>
-            )}
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 group-hover:text-teal-600 transition-colors">
-              {card.name}
-            </h3>
-            <div className="flex items-center space-x-2 mt-1">
-              <p className="text-sm text-gray-600">{card.issuer}</p>
-              <Badge className={`text-xs ${getNetworkColor(card.network)}`}>
-                {card.network}
-              </Badge>
+        <div className="flex items-start justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-16 h-10 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg flex items-center justify-center overflow-hidden">
+              {card.imageUrl ? (
+                <img 
+                  src={card.imageUrl} 
+                  alt={card.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.innerHTML = `<span class="text-xs font-medium text-gray-500">${card.issuer}</span>`;
+                  }}
+                />
+              ) : (
+                <span className="text-xs font-medium text-gray-500">{card.issuer}</span>
+              )}
             </div>
+            <div className="flex-1">
+              <div className="flex items-center space-x-2">
+                <h3 className="font-semibold text-gray-900 group-hover:text-teal-600 transition-colors text-sm">
+                  {card.name}
+                </h3>
+                {isPopular && <Star className="h-4 w-4 text-yellow-500" />}
+              </div>
+              <div className="flex items-center space-x-2 mt-1">
+                <p className="text-xs text-gray-600">{card.issuer}</p>
+                <Badge className={`text-xs ${getNetworkColor(card.network)}`}>
+                  {card.network}
+                </Badge>
+              </div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="flex items-center space-x-1">
+              <Star className="h-3 w-3 text-yellow-500" />
+              <span className="text-xs font-medium">{card.rating}</span>
+            </div>
+            <p className="text-xs text-gray-500">{card.reviewCount} reviews</p>
           </div>
         </div>
       </CardHeader>
       
-      <CardContent className="pt-0 space-y-4">
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-600">Annual Fee</span>
+      <CardContent className="pt-0 space-y-3">
+        <div className="flex items-center justify-between text-sm">
+          <span className="text-gray-600">Annual Fee</span>
           <span className="font-medium text-gray-900">
             {card.annualFee === 0 ? 'No Fee' : `$${card.annualFee}`}
           </span>
@@ -420,17 +542,24 @@ function CreditCardComponent({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm text-gray-600">Best Rate</span>
-            <Badge variant="secondary" className="bg-teal-100 text-teal-700">
+            <Badge variant="secondary" className="bg-teal-100 text-teal-700 text-xs">
               {bestCategory.cashbackRate}% {bestCategory.category}
             </Badge>
           </div>
           
           {bestCategory.isRotating && bestCategory.validUntil && (
-            <p className="text-xs text-orange-600">
-              Rotating category valid until {new Date(bestCategory.validUntil).toLocaleDateString()}
-            </p>
+            <div className="flex items-center space-x-1 text-xs text-orange-600">
+              <TrendingUp className="h-3 w-3" />
+              <span>Valid until {new Date(bestCategory.validUntil).toLocaleDateString()}</span>
+            </div>
           )}
         </div>
+
+        {card.welcomeBonus && (
+          <div className="text-xs text-green-700 bg-green-50 p-2 rounded">
+            <strong>Welcome Bonus:</strong> {card.welcomeBonus}
+          </div>
+        )}
 
         <div className="space-y-1">
           <span className="text-sm font-medium text-gray-700">Categories:</span>
@@ -448,24 +577,47 @@ function CreditCardComponent({
           </div>
         </div>
 
-        {showAddButton && (
-          <div className="pt-2">
-            {isInPortfolio ? (
-              <Badge className="bg-green-100 text-green-700 w-full justify-center">
-                In Portfolio
-              </Badge>
-            ) : (
-              <Button 
-                onClick={onAddToPortfolio}
-                disabled={isAddingToPortfolio}
-                size="sm"
-                className="w-full bg-teal-500 hover:bg-teal-600"
-              >
-                {isAddingToPortfolio ? 'Adding...' : 'Add to Portfolio'}
-              </Button>
-            )}
+        {card.features.length > 0 && (
+          <div className="space-y-1">
+            <span className="text-sm font-medium text-gray-700">Features:</span>
+            <div className="text-xs text-gray-600">
+              {card.features.slice(0, 2).join(' • ')}
+              {card.features.length > 2 && ` • +${card.features.length - 2} more`}
+            </div>
           </div>
         )}
+
+        <div className="flex space-x-2 pt-2">
+          {showAddButton && (
+            <div className="flex-1">
+              {isInPortfolio ? (
+                <Badge className="bg-green-100 text-green-700 w-full justify-center text-xs">
+                  In Portfolio
+                </Badge>
+              ) : (
+                <Button 
+                  onClick={onAddToPortfolio}
+                  disabled={isAddingToPortfolio}
+                  size="sm"
+                  className="w-full bg-teal-500 hover:bg-teal-600 text-xs"
+                >
+                  {isAddingToPortfolio ? 'Adding...' : 'Add to Portfolio'}
+                </Button>
+              )}
+            </div>
+          )}
+          {card.applyUrl && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="text-xs"
+              onClick={() => window.open(card.applyUrl, '_blank')}
+            >
+              <ExternalLink className="h-3 w-3 mr-1" />
+              Apply
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

@@ -5,11 +5,13 @@ import type { Card, CardCategory } from "./list";
 export interface AddCardRequest {
   name: string;
   issuer?: string;
+  useExternalApi?: boolean;
 }
 
 export interface AddCardResponse {
   card: Card;
   isNew: boolean;
+  fromExternalApi: boolean;
 }
 
 // Adds a card to the database or returns existing card with updated image.
@@ -55,16 +57,69 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
         categories
       };
 
-      return { card, isNew: false };
+      return { card, isNew: false, fromExternalApi: false };
     }
 
-    // If not found, try fuzzy matching or create new card
-    const { issuer, network, imageUrl } = await inferCardDetails(cardName, req.issuer);
+    let cardData: any = null;
+    let fromExternalApi = false;
+
+    // Try to fetch from external API if requested
+    if (req.useExternalApi) {
+      try {
+        const externalResponse = await fetch('http://localhost:4000/cards/fetch-external', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cardName })
+        });
+
+        if (externalResponse.ok) {
+          const externalData = await externalResponse.json();
+          if (externalData.found && externalData.cardData) {
+            cardData = externalData.cardData;
+            fromExternalApi = true;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch from external API:', error);
+      }
+    }
+
+    // If no external data, use manual inference
+    if (!cardData) {
+      const { issuer, network, imageUrl } = await inferCardDetails(cardName, req.issuer);
+      cardData = {
+        name: cardName,
+        issuer,
+        network,
+        imageUrl,
+        annualFee: 0,
+        categories: [{
+          category: 'Other',
+          cashbackRate: 1.0,
+          isRotating: false
+        }],
+        features: [],
+        creditRange: 'Good to Excellent'
+      };
+    }
 
     // Create new card
     const newCard = await cardsDB.queryRow`
-      INSERT INTO cards (name, issuer, image_url, annual_fee, network)
-      VALUES (${cardName}, ${issuer}, ${imageUrl}, 0, ${network})
+      INSERT INTO cards (
+        name, issuer, image_url, annual_fee, network, 
+        features, welcome_bonus, credit_range, apply_url
+      )
+      VALUES (
+        ${cardData.name}, 
+        ${cardData.issuer}, 
+        ${cardData.imageUrl}, 
+        ${cardData.annualFee || 0}, 
+        ${cardData.network || 'Visa'},
+        ${JSON.stringify(cardData.features || [])},
+        ${cardData.welcomeBonus || null},
+        ${cardData.creditRange || 'Good to Excellent'},
+        ${cardData.applyUrl || null}
+      )
       RETURNING id, name, issuer, image_url, annual_fee, network
     `;
 
@@ -72,18 +127,43 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
       throw APIError.internal("Failed to create card");
     }
 
-    // Add default category
-    await cardsDB.exec`
-      INSERT INTO card_categories (card_id, category, cashback_rate, is_rotating)
-      VALUES (${newCard.id}, 'Other', 1.0, FALSE)
-    `;
-
-    const categories: CardCategory[] = [{
-      id: 0,
-      category: 'Other',
-      cashbackRate: 1.0,
-      isRotating: false
-    }];
+    // Add categories
+    const categories: CardCategory[] = [];
+    if (cardData.categories && cardData.categories.length > 0) {
+      for (const cat of cardData.categories) {
+        await cardsDB.exec`
+          INSERT INTO card_categories (card_id, category, cashback_rate, is_rotating, valid_until)
+          VALUES (
+            ${newCard.id}, 
+            ${cat.category}, 
+            ${cat.cashbackRate || 1.0}, 
+            ${cat.isRotating || false},
+            ${cat.validUntil ? new Date(cat.validUntil) : null}
+          )
+        `;
+        
+        categories.push({
+          id: 0, // Will be assigned by database
+          category: cat.category,
+          cashbackRate: cat.cashbackRate || 1.0,
+          isRotating: cat.isRotating || false,
+          validUntil: cat.validUntil
+        });
+      }
+    } else {
+      // Add default category
+      await cardsDB.exec`
+        INSERT INTO card_categories (card_id, category, cashback_rate, is_rotating)
+        VALUES (${newCard.id}, 'Other', 1.0, FALSE)
+      `;
+      
+      categories.push({
+        id: 0,
+        category: 'Other',
+        cashbackRate: 1.0,
+        isRotating: false
+      });
+    }
 
     const card: Card = {
       id: newCard.id,
@@ -95,7 +175,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
       categories
     };
 
-    return { card, isNew: true };
+    return { card, isNew: true, fromExternalApi };
   }
 );
 
@@ -143,9 +223,6 @@ async function inferCardDetails(cardName: string, providedIssuer?: string): Prom
 }
 
 async function fetchCardImage(cardName: string, issuer: string): Promise<string> {
-  // In a real implementation, you would use web scraping or APIs to fetch card images
-  // For now, we'll return actual card image URLs based on known patterns
-  
   const name = cardName.toLowerCase();
   
   // Chase cards
@@ -169,6 +246,8 @@ async function fetchCardImage(cardName: string, issuer: string): Promise<string>
       return 'https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/category/cardarts/gold-card.png';
     } else if (name.includes('blue cash everyday')) {
       return 'https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/category/cardarts/blue-cash-everyday-card.png';
+    } else if (name.includes('blue cash preferred')) {
+      return 'https://icm.aexp-static.com/Internet/Acquisition/US_en/AppContent/OneSite/category/cardarts/blue-cash-preferred-card.png';
     }
   }
   
@@ -178,6 +257,8 @@ async function fetchCardImage(cardName: string, issuer: string): Promise<string>
       return 'https://ecm.capitalone.com/WCM/card/products/venture-x-card-art.png';
     } else if (name.includes('savor')) {
       return 'https://ecm.capitalone.com/WCM/card/products/savor-one-card-art.png';
+    } else if (name.includes('quicksilver')) {
+      return 'https://ecm.capitalone.com/WCM/card/products/quicksilver-card-art.png';
     }
   }
   
@@ -186,10 +267,7 @@ async function fetchCardImage(cardName: string, issuer: string): Promise<string>
 }
 
 function generateFallbackImageUrl(cardName: string, issuer: string, network?: string): string {
-  // Generate a placeholder image URL based on card details
   const encodedName = encodeURIComponent(cardName);
   const encodedIssuer = encodeURIComponent(issuer);
-  
-  // Use a placeholder service that can generate card-like images
   return `https://via.placeholder.com/300x190/1f2937/ffffff?text=${encodedIssuer}+${encodedName}`;
 }

@@ -118,10 +118,10 @@ export const getComprehensiveCards = api<SearchComprehensiveCardsParams, Compreh
     const cardsQuery = `
       SELECT DISTINCT c.id, c.name, c.issuer, c.network, c.image_url, c.annual_fee,
              c.features, c.welcome_bonus, c.credit_range, c.apply_url, c.is_popular,
-             c.rating, c.review_count
+             COALESCE(c.rating, 4.0) as rating, COALESCE(c.review_count, 0) as review_count
       FROM cards c
       ${whereClause}
-      ORDER BY c.is_popular DESC, c.rating DESC, c.name ASC
+      ORDER BY c.is_popular DESC, COALESCE(c.rating, 4.0) DESC, c.name ASC
       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
     `;
     
@@ -159,7 +159,7 @@ export const getComprehensiveCards = api<SearchComprehensiveCardsParams, Compreh
         creditRange: cardRow.credit_range || 'Good to Excellent',
         applyUrl: cardRow.apply_url,
         isPopular: cardRow.is_popular || false,
-        rating: cardRow.rating || 4.0,
+        rating: parseFloat(cardRow.rating) || 4.0,
         reviewCount: cardRow.review_count || 0
       });
     }
@@ -168,10 +168,10 @@ export const getComprehensiveCards = api<SearchComprehensiveCardsParams, Compreh
     const popularCardsRows = await cardsDB.queryAll`
       SELECT id, name, issuer, network, image_url, annual_fee,
              features, welcome_bonus, credit_range, apply_url, is_popular,
-             rating, review_count
+             COALESCE(rating, 4.0) as rating, COALESCE(review_count, 0) as review_count
       FROM cards 
       WHERE is_popular = true
-      ORDER BY rating DESC, review_count DESC
+      ORDER BY COALESCE(rating, 4.0) DESC, COALESCE(review_count, 0) DESC
       LIMIT 6
     `;
 
@@ -206,7 +206,7 @@ export const getComprehensiveCards = api<SearchComprehensiveCardsParams, Compreh
         creditRange: cardRow.credit_range || 'Good to Excellent',
         applyUrl: cardRow.apply_url,
         isPopular: cardRow.is_popular || false,
-        rating: cardRow.rating || 4.0,
+        rating: parseFloat(cardRow.rating) || 4.0,
         reviewCount: cardRow.review_count || 0
       });
     }
@@ -232,7 +232,7 @@ export const getCardDetails = api<GetCardDetailsParams, CardDetailsResponse>(
     const cardRow = await cardsDB.queryRow`
       SELECT id, name, issuer, network, image_url, annual_fee,
              features, welcome_bonus, credit_range, apply_url, is_popular,
-             rating, review_count
+             COALESCE(rating, 4.0) as rating, COALESCE(review_count, 0) as review_count
       FROM cards 
       WHERE id = ${cardId}
     `;
@@ -269,7 +269,7 @@ export const getCardDetails = api<GetCardDetailsParams, CardDetailsResponse>(
       creditRange: cardRow.credit_range || 'Good to Excellent',
       applyUrl: cardRow.apply_url,
       isPopular: cardRow.is_popular || false,
-      rating: cardRow.rating || 4.0,
+      rating: parseFloat(cardRow.rating) || 4.0,
       reviewCount: cardRow.review_count || 0
     };
 

@@ -1,7 +1,7 @@
 import { api } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 
-const deepSeekApiKey = secret("DeepSeekApiKey");
+const openAIApiKey = secret("OpenAIApiKey");
 
 export interface ChatRequest {
   message: string;
@@ -28,14 +28,14 @@ Keep responses concise, helpful, and focused on maximizing rewards. Always consi
 Context about available cards: Chase Freedom Flex (5% rotating categories), Chase Sapphire Reserve (3% travel/dining), Amex Gold (4% dining/groceries), Citi Double Cash (2% everything), Discover it (5% rotating), and many others.`;
 
     try {
-      const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${deepSeekApiKey()}`
+          'Authorization': `Bearer ${openAIApiKey()}`
         },
         body: JSON.stringify({
-          model: 'deepseek-chat',
+          model: 'gpt-4o-mini',
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: req.message }
@@ -46,7 +46,7 @@ Context about available cards: Chase Freedom Flex (5% rotating categories), Chas
       });
 
       if (!response.ok) {
-        throw new Error(`DeepSeek API error: ${response.status}`);
+        throw new Error(`OpenAI API error: ${response.status}`);
       }
 
       const data = await response.json();

@@ -42,7 +42,7 @@ export const recommend = api<RecommendCardsParams, RecommendCardsResponse>(
         category: cat.category,
         cashbackRate: cat.cashback_rate,
         isRotating: cat.is_rotating,
-        validUntil: cat.valid_until ? cat.valid_until.toISOString().split('T')[0] : undefined
+        validUntil: cat.valid_until ? new Date(cat.valid_until).toISOString().split('T')[0] : undefined
       }));
       
       cards.push({

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { CreditCard, Home, Target, Bot, User } from 'lucide-react';
+import { CreditCard, Home, Target, Bot } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,7 +14,6 @@ export default function Layout({ children }: LayoutProps) {
     { path: '/cards', icon: CreditCard, label: 'Cards' },
     { path: '/recommendations', icon: Target, label: 'Optimize' },
     { path: '/ai-chat', icon: Bot, label: 'AI Chat' },
-    { path: '/profile', icon: User, label: 'Profile' },
   ];
 
   return (

@@ -26,7 +26,7 @@ export default function AIChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: "Hi! I'm SwipeRight AI, your personal credit card advisor. I can help you find the best cards for specific purchases, track your benefits, and optimize your rewards strategy. What would you like to know?",
+      content: "Hi! I'm SwipeRight AI, your personal credit card advisor. I can help you find the best cards for specific purchases, track your benefits, and optimize your cash back strategy. What would you like to know?",
       isUser: false,
       timestamp: new Date(),
     }

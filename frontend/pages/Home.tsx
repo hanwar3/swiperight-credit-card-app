@@ -20,7 +20,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold text-gray-900 leading-tight">
           {user ? `Welcome back, ${user.firstName || 'there'}!` : 'Optimize Your'}
           <span className="block bg-gradient-to-r from-teal-600 to-green-600 bg-clip-text text-transparent">
-            {user ? 'Ready to maximize your rewards?' : 'Credit Card Rewards'}
+            {user ? 'Ready to maximize your rewards?' : 'Credit Card Cash Back'}
           </span>
         </h1>
         
@@ -95,7 +95,7 @@ export default function Home() {
         <div className="space-y-6">
           <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Why Choose SwipeRight?</h2>
-            <p className="text-gray-600">Join thousands of users maximizing their credit card rewards</p>
+            <p className="text-gray-600">Join thousands of users maximizing their credit card benefits</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

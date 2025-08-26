@@ -1,7 +1,7 @@
 import { api } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 
-const openAIApiKey = secret("OpenAIApiKey");
+const geminiApiKey = secret("GeminiApiKey");
 
 export interface ChatRequest {
   message: string;
@@ -28,29 +28,34 @@ Keep responses concise, helpful, and focused on maximizing rewards. Always consi
 Context about available cards: Chase Freedom Flex (5% rotating categories), Chase Sapphire Reserve (3% travel/dining), Amex Gold (4% dining/groceries), Citi Double Cash (2% everything), Discover it (5% rotating), and many others.`;
 
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${openAIApiKey()}`
+          'X-goog-api-key': geminiApiKey()
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: req.message }
-          ],
-          max_tokens: 500,
-          temperature: 0.7
+          contents: [
+            {
+              parts: [
+                {
+                  text: systemPrompt
+                },
+                {
+                  text: req.message
+                }
+              ]
+            }
+          ]
         })
       });
 
       if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.status}`);
+        throw new Error(`Gemini API error: ${response.status}`);
       }
 
       const data = await response.json();
-      const aiResponse = data.choices?.[0]?.message?.content || "I'm sorry, I couldn't process your request. Please try again.";
+      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I couldn't process your request. Please try again.";
 
       return { response: aiResponse };
     } catch (error) {

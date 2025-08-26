@@ -64,25 +64,25 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
     let fromExternalApi = false;
 
     // Try to fetch from external API if requested
-    if (req.useExternalApi) {
-      try {
-        const externalResponse = await fetch('http://localhost:4000/cards/fetch-external', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cardName })
-        });
+    // if (req.useExternalApi) {
+    //   try {
+    //     const externalResponse = await fetch('http://localhost:4000/cards/fetch-external', {
+    //       method: 'POST',
+    //       headers: { 'Content-Type': 'application/json' },
+    //       body: JSON.stringify({ cardName })
+    //     });
 
-        if (externalResponse.ok) {
-          const externalData = await externalResponse.json();
-          if (externalData.found && externalData.cardData) {
-            cardData = externalData.cardData;
-            fromExternalApi = true;
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch from external API:', error);
-      }
-    }
+    //     if (externalResponse.ok) {
+    //       const externalData = await externalResponse.json();
+    //       if (externalData.found && externalData.cardData) {
+    //         cardData = externalData.cardData;
+    //         fromExternalApi = true;
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.error('Failed to fetch from external API:', error);
+    //   }
+    // }
 
     // If no external data, use manual inference
     if (!cardData) {

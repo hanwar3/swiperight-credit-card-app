@@ -291,12 +291,12 @@ export default function Cards() {
               {/* Issuer */}
               <div className="space-y-2">
                 <Label>Issuer</Label>
-                <Select value={selectedIssuer} onValueChange={setSelectedIssuer}>
+                <Select value={selectedIssuer} onValueChange={(value) => setSelectedIssuer(value === 'all' ? '' : value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Issuers" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Issuers</SelectItem>
+                    <SelectItem value="all">All Issuers</SelectItem>
                     {issuers.map(issuer => (
                       <SelectItem key={issuer} value={issuer}>{issuer}</SelectItem>
                     ))}
@@ -307,12 +307,12 @@ export default function Cards() {
               {/* Network */}
               <div className="space-y-2">
                 <Label>Network</Label>
-                <Select value={selectedNetwork} onValueChange={setSelectedNetwork}>
+                <Select value={selectedNetwork} onValueChange={(value) => setSelectedNetwork(value === 'all' ? '' : value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Networks" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Networks</SelectItem>
+                    <SelectItem value="all">All Networks</SelectItem>
                     {networks.map(network => (
                       <SelectItem key={network} value={network}>{network}</SelectItem>
                     ))}
@@ -323,12 +323,12 @@ export default function Cards() {
               {/* Category */}
               <div className="space-y-2">
                 <Label>Category</Label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <Select value={selectedCategory} onValueChange={(value) => setSelectedCategory(value === 'all' ? '' : value)}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
                     {categories.map(category => (
                       <SelectItem key={category} value={category}>{category}</SelectItem>
                     ))}

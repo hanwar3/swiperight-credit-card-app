@@ -112,8 +112,8 @@ export default function Cards() {
   const popularCards = comprehensiveData?.popularCards || [];
   const portfolioCards = portfolioData?.cards || [];
   
-  const issuers = [...new Set(comprehensiveCards.map(card => card.issuer))];
-  const networks = [...new Set(comprehensiveCards.map(card => card.network))];
+  const issuers = [...new Set(comprehensiveCards.map(card => card.issuer).filter(Boolean))];
+  const networks = [...new Set(comprehensiveCards.map(card => card.network).filter(Boolean))];
   const categories = ['Groceries', 'Gas', 'Dining', 'Travel', 'Shopping', 'Streaming', 'All Purchases'];
 
   const handleAddCard = () => {

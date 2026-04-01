@@ -6,6 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Message {
   id: string;
@@ -34,9 +35,13 @@ export default function AIChat() {
   const [inputMessage, setInputMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const chatMutation = useMutation({
-    mutationFn: (message: string) => backend.ai.chat({ message }),
+    mutationFn: (message: string) => backend.ai.chat({
+      message,
+      userId: user?.userId
+    }),
     onSuccess: (data) => {
       const aiMessage: Message = {
         id: Date.now().toString(),

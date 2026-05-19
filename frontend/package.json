@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "@tailwindcss/oxide": "^4.1.11",
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^25.9.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",

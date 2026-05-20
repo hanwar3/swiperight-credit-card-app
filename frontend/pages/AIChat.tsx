@@ -34,7 +34,7 @@ const MODE_CONFIG = {
 };
 
 export default function AIChat() {
-  const [mode, setMode] = useState<Mode>('speech-to-speech');
+  const [mode, setMode] = useState<Mode>('text-to-speech');
   const [showModeMenu, setShowModeMenu] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState('');
@@ -207,19 +207,20 @@ export default function AIChat() {
 
   return (
     <div className="fixed inset-0 bg-black flex flex-col overflow-hidden" style={{ top: '64px', bottom: '68px' }}>
+      {/* Background Orbs updated to Cyan/Teal/Blue */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-20%] left-[-10%] w-[60vw] h-[60vw] rounded-full opacity-20"
-          style={{ background: 'radial-gradient(circle, #a855f7 0%, transparent 70%)', filter: 'blur(80px)' }} />
+          style={{ background: 'radial-gradient(circle, #0ea5e9 0%, transparent 70%)', filter: 'blur(80px)' }} />
         <div className="absolute bottom-[-20%] right-[-10%] w-[50vw] h-[50vw] rounded-full opacity-15"
-          style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)', filter: 'blur(80px)' }} />
+          style={{ background: 'radial-gradient(circle, #2dd4bf 0%, transparent 70%)', filter: 'blur(80px)' }} />
         <div className="absolute top-[40%] right-[20%] w-[30vw] h-[30vw] rounded-full opacity-10"
-          style={{ background: 'radial-gradient(circle, #f97316 0%, transparent 70%)', filter: 'blur(60px)' }} />
+          style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)', filter: 'blur(60px)' }} />
       </div>
 
       <div className="relative z-10 flex flex-col h-full">
         <div className="flex items-center justify-between px-4 py-3 border-b border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-lg" style={{ boxShadow: '0 0 8px #34d399' }} />
+            <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-lg" style={{ boxShadow: '0 0 8px #22d3ee' }} />
             <span className="text-white/60 text-sm font-medium tracking-wide">SwipeRight AI</span>
           </div>
           <button
@@ -242,7 +243,7 @@ export default function AIChat() {
                     <div className={`text-sm font-medium ${mode === key ? 'text-white' : 'text-white/70'}`}>{cfg.label}</div>
                     <div className="text-xs text-white/40 mt-0.5">{cfg.description}</div>
                   </div>
-                  {mode === key && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0" />}
+                  {mode === key && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />}
                 </button>
               ))}
             </div>
@@ -318,6 +319,10 @@ export default function AIChat() {
           from { opacity: 0; transform: translateY(8px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes shimmer-sweep {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
       `}</style>
     </div>
   );
@@ -344,11 +349,12 @@ function SphereChatInterface({
   const lastAiMsg = [...messages].reverse().find(m => !m.isUser);
   const lastUserMsg = [...messages].reverse().find(m => m.isUser);
 
+  // ElevenLabs inspired Green/Blue Shimmer Palette
   const sphereColors = {
-    idle: ['#7c3aed', '#4f46e5', '#2563eb'],
-    listening: ['#10b981', '#059669', '#047857'],
-    thinking: ['#f59e0b', '#d97706', '#b45309'],
-    speaking: ['#8b5cf6', '#7c3aed', '#6d28d9'],
+    idle: ['#22d3ee', '#0ea5e9', '#1e40af'],      // Cyan -> Sky Blue -> Deep Blue
+    listening: ['#67e8f9', '#2dd4bf', '#1d4ed8'], // Light Cyan -> Teal -> Blue
+    thinking: ['#93c5fd', '#34d399', '#2563eb'],  // Soft Blue -> Emerald -> Royal
+    speaking: ['#a7f3d0', '#22d3ee', '#3b82f6'],  // Light Green -> Cyan -> Bright Blue
   };
   const colors = sphereColors[sphereState];
 
@@ -376,7 +382,7 @@ function SphereChatInterface({
           )}
 
           <div
-            className="relative rounded-full cursor-pointer select-none transition-transform duration-150"
+            className="relative rounded-full cursor-pointer select-none transition-transform duration-150 overflow-hidden"
             style={{
               width: 180,
               height: 180,
@@ -384,8 +390,8 @@ function SphereChatInterface({
               animation: sphereState === 'idle' ? 'float 4s ease-in-out infinite' :
                 sphereState === 'thinking' ? 'sphere-pulse 1.2s ease-in-out infinite' :
                 sphereState === 'speaking' ? 'sphere-speak 0.8s ease-in-out infinite' : 'none',
-              background: `radial-gradient(circle at 35% 30%, ${colors[0]}cc, ${colors[1]} 50%, ${colors[2]} 100%)`,
-              boxShadow: `0 0 60px ${colors[0]}66, 0 0 120px ${colors[0]}33, inset 0 1px 0 rgba(255,255,255,0.2)`,
+              background: `radial-gradient(circle at 35% 30%, ${colors[0]}cc, ${colors[1]} 60%, ${colors[2]} 100%)`,
+              boxShadow: `0 0 60px ${colors[0]}66, 0 0 120px ${colors[0]}33, inset 0 1px 0 rgba(255,255,255,0.4)`,
             }}
             onClick={() => {
               if (isSpeaking) onStopAudio();
@@ -393,18 +399,27 @@ function SphereChatInterface({
               else if (!isThinking && !isProcessingVoice) onStartRecording();
             }}
           >
+            {/* Base Shimmer Overlay */}
+            <div className="absolute inset-0 opacity-40 mix-blend-overlay pointer-events-none"
+              style={{
+                background: 'linear-gradient(60deg, transparent 20%, rgba(255,255,255,0.7) 40%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0.7) 60%, transparent 80%)',
+                backgroundSize: '200% 200%',
+                animation: 'shimmer-sweep 4s linear infinite',
+              }} />
+
+            {/* Inner highlights */}
             <div className="absolute inset-0 rounded-full"
-              style={{ background: 'radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35) 0%, transparent 55%)' }} />
+              style={{ background: 'radial-gradient(circle at 30% 25%, rgba(255,255,255,0.4) 0%, transparent 55%)' }} />
             <div className="absolute inset-0 rounded-full"
               style={{ background: 'radial-gradient(circle at 70% 80%, rgba(0,0,0,0.3) 0%, transparent 50%)' }} />
 
             <div className="absolute inset-0 flex items-center justify-center">
               {isProcessingVoice || isThinking ? (
-                <Loader2 className="w-10 h-10 text-white/80 animate-spin" />
+                <Loader2 className="w-10 h-10 text-white/90 animate-spin drop-shadow-md" />
               ) : isRecording ? (
                 <div className="flex items-end gap-1 h-10">
                   {[0.4, 0.7, 1, 0.8, 0.5, 0.9, 0.6].map((h, i) => (
-                    <div key={i} className="w-1.5 rounded-full bg-white/90"
+                    <div key={i} className="w-1.5 rounded-full bg-white drop-shadow-md"
                       style={{
                         height: `${Math.max(6, (h + audioLevel * 0.5) * 32)}px`,
                         animation: `wave-bar ${0.6 + i * 0.1}s ease-in-out infinite`,
@@ -415,7 +430,7 @@ function SphereChatInterface({
               ) : isSpeaking ? (
                 <div className="flex items-end gap-1 h-10">
                   {[0.5, 0.9, 0.7, 1, 0.6, 0.8, 0.4].map((h, i) => (
-                    <div key={i} className="w-1.5 rounded-full bg-white/90"
+                    <div key={i} className="w-1.5 rounded-full bg-white drop-shadow-md"
                       style={{
                         height: `${h * 32}px`,
                         animation: `wave-bar ${0.5 + i * 0.07}s ease-in-out infinite`,
@@ -424,7 +439,7 @@ function SphereChatInterface({
                   ))}
                 </div>
               ) : (
-                <Mic className="w-10 h-10 text-white/80" />
+                <Mic className="w-10 h-10 text-white/90 drop-shadow-md" />
               )}
             </div>
           </div>
@@ -447,18 +462,18 @@ function SphereChatInterface({
           )}
           {lastAiMsg && !isThinking && (
             <div className="rounded-2xl px-4 py-3 mr-8"
-              style={{ background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.2)', animation: 'fade-up 0.3s ease-out' }}>
-              <p className="text-xs text-purple-400/60 mb-1">SwipeRight AI</p>
+              style={{ background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.2)', animation: 'fade-up 0.3s ease-out' }}>
+              <p className="text-xs text-cyan-400/70 mb-1">SwipeRight AI</p>
               <p className="text-sm text-white/80 line-clamp-4">{lastAiMsg.content}</p>
             </div>
           )}
           {isThinking && (
             <div className="rounded-2xl px-4 py-3 mr-8"
-              style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)' }}>
-              <p className="text-xs text-purple-400/60 mb-2">SwipeRight AI</p>
+              style={{ background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.15)' }}>
+              <p className="text-xs text-cyan-400/70 mb-2">SwipeRight AI</p>
               <div className="flex gap-1.5">
                 {[0, 1, 2].map(i => (
-                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-purple-400"
+                  <div key={i} className="w-1.5 h-1.5 rounded-full bg-cyan-400"
                     style={{ animation: `sphere-pulse 1s ease-in-out infinite`, animationDelay: `${i * 0.2}s` }} />
                 ))}
               </div>
@@ -539,14 +554,14 @@ function TextChatInterface({
             style={{ animation: 'fade-up 0.25s ease-out' }}>
             <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${msg.isUser ? 'rounded-br-sm' : 'rounded-bl-sm'}`}
               style={msg.isUser
-                ? { background: 'rgba(139,92,246,0.25)', border: '1px solid rgba(139,92,246,0.3)' }
-                : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }
+                ? { background: 'rgba(20,184,166,0.25)', border: '1px solid rgba(20,184,166,0.3)' } // Teal for User
+                : { background: 'rgba(14,165,233,0.12)', border: '1px solid rgba(14,165,233,0.2)' } // Sky Blue for AI
               }>
               {!msg.isUser && (
-                <p className="text-xs text-purple-400/60 mb-1.5 font-medium">SwipeRight AI</p>
+                <p className="text-xs text-cyan-400/80 mb-1.5 font-medium">SwipeRight AI</p>
               )}
               <p className="text-sm text-white/85 leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-              <p className="text-xs text-white/25 mt-1.5">
+              <p className="text-xs text-white/30 mt-1.5">
                 {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </p>
             </div>
@@ -556,17 +571,17 @@ function TextChatInterface({
         {(isThinking || isProcessingVoice) && (
           <div className="flex justify-start" style={{ animation: 'fade-up 0.25s ease-out' }}>
             <div className="rounded-2xl rounded-bl-sm px-4 py-3"
-              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <p className="text-xs text-purple-400/60 mb-2 font-medium">SwipeRight AI</p>
+              style={{ background: 'rgba(14,165,233,0.08)', border: '1px solid rgba(14,165,233,0.15)' }}>
+              <p className="text-xs text-cyan-400/80 mb-2 font-medium">SwipeRight AI</p>
               <div className="flex gap-1.5 items-center">
                 {isProcessingVoice ? (
                   <>
-                    <Loader2 className="w-3 h-3 text-purple-400 animate-spin" />
-                    <span className="text-xs text-white/40">Processing speech...</span>
+                    <Loader2 className="w-3 h-3 text-cyan-400 animate-spin" />
+                    <span className="text-xs text-cyan-400/60">Processing speech...</span>
                   </>
                 ) : (
                   [0, 1, 2].map(i => (
-                    <div key={i} className="w-2 h-2 rounded-full bg-purple-400/60"
+                    <div key={i} className="w-2 h-2 rounded-full bg-cyan-400/60"
                       style={{ animation: 'sphere-pulse 1s ease-in-out infinite', animationDelay: `${i * 0.18}s` }} />
                   ))
                 )}
@@ -578,9 +593,9 @@ function TextChatInterface({
         {isSpeaking && (
           <div className="flex justify-center">
             <button onClick={onStopAudio}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs text-white/60 hover:text-white transition-all"
-              style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
-              <Volume2 className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs text-cyan-400/80 hover:text-cyan-400 transition-all"
+              style={{ background: 'rgba(14,165,233,0.1)', border: '1px solid rgba(14,165,233,0.2)' }}>
+              <Volume2 className="w-3.5 h-3.5 animate-pulse" />
               <span>Speaking — tap to stop</span>
               <X className="w-3 h-3" />
             </button>
@@ -612,8 +627,8 @@ function TextChatInterface({
                 !showInput ? 'flex-1 w-auto px-6 h-12 rounded-2xl gap-2' : ''
               }`}
               style={isRecording
-                ? { background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 0 20px rgba(16,185,129,0.4)' }
-                : { background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.3)' }
+                ? { background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '0 0 20px rgba(16,185,129,0.4)' } // Keeps green for recording state
+                : { background: 'rgba(14,165,233,0.2)', border: '1px solid rgba(14,165,233,0.3)' } // Cyan instead of purple
               }>
               {isRecording ? (
                 <>
@@ -626,10 +641,10 @@ function TextChatInterface({
                   {!showInput && <span className="text-white text-sm font-medium">Stop</span>}
                 </>
               ) : isProcessingVoice ? (
-                <Loader2 className="w-4 h-4 text-purple-400 animate-spin" />
+                <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
               ) : (
                 <>
-                  <Mic className="w-4 h-4 text-purple-400" />
+                  <Mic className="w-4 h-4 text-cyan-400" />
                   {!showInput && <span className="text-white/80 text-sm font-medium">Tap to speak</span>}
                 </>
               )}
@@ -641,7 +656,7 @@ function TextChatInterface({
               onClick={onSend}
               disabled={!inputText.trim() || isThinking}
               className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all disabled:opacity-30"
-              style={{ background: inputText.trim() ? 'linear-gradient(135deg, #8b5cf6, #6d28d9)' : 'rgba(255,255,255,0.05)' }}>
+              style={{ background: inputText.trim() ? 'linear-gradient(135deg, #0ea5e9, #0284c7)' : 'rgba(255,255,255,0.05)' }}>
               <Send className="w-3.5 h-3.5 text-white" />
             </button>
           )}

@@ -478,7 +478,8 @@ function ComprehensiveCardComponent({
       )
     : { cashbackRate: 0, category: 'N/A', id: 0, isRotating: false };
 
-  const getNetworkColor = (network: string) => {
+  const getNetworkColor = (network: string | undefined) => {
+    if (!network) return 'bg-gray-100 text-gray-700';
     switch (network.toLowerCase()) {
       case 'visa': return 'bg-blue-100 text-blue-700';
       case 'mastercard': return 'bg-red-100 text-red-700';
@@ -518,18 +519,20 @@ function ComprehensiveCardComponent({
               </div>
               <div className="flex items-center space-x-2 mt-1">
                 <p className="text-xs text-gray-600">{card.issuer}</p>
-                <Badge className={`text-xs ${getNetworkColor(card.network)}`}>
-                  {card.network}
-                </Badge>
+                {card.network && (
+                  <Badge className={`text-xs ${getNetworkColor(card.network)}`}>
+                    {card.network}
+                  </Badge>
+                )}
               </div>
             </div>
           </div>
           <div className="text-right">
             <div className="flex items-center space-x-1">
               <Star className="h-3 w-3 text-yellow-500" />
-              <span className="text-xs font-medium">{card.rating}</span>
+              <span className="text-xs font-medium">{card.rating !== undefined ? card.rating : 4.0}</span>
             </div>
-            <p className="text-xs text-gray-500">{card.reviewCount} reviews</p>
+            <p className="text-xs text-gray-500">{card.reviewCount !== undefined ? card.reviewCount : 0} reviews</p>
           </div>
         </div>
       </CardHeader>
@@ -644,7 +647,8 @@ function PortfolioCardComponent({ userCard }: { userCard: UserCard }) {
       )
     : { cashbackRate: 0, category: 'N/A', id: 0, isRotating: false };
 
-  const getNetworkColor = (network: string) => {
+  const getNetworkColor = (network: string | undefined) => {
+    if (!network) return 'bg-gray-100 text-gray-700';
     switch (network.toLowerCase()) {
       case 'visa': return 'bg-blue-100 text-blue-700';
       case 'mastercard': return 'bg-red-100 text-red-700';
@@ -683,9 +687,11 @@ function PortfolioCardComponent({ userCard }: { userCard: UserCard }) {
             )}
             <div className="flex items-center space-x-2 mt-1">
               <p className="text-sm text-gray-600">{card.issuer}</p>
-              <Badge className={`text-xs ${getNetworkColor(card.network)}`}>
-                {card.network}
-              </Badge>
+              {card.network && (
+                <Badge className={`text-xs ${getNetworkColor(card.network)}`}>
+                  {card.network}
+                </Badge>
+              )}
             </div>
           </div>
         </div>

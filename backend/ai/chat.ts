@@ -1,3 +1,12 @@
+Here is the resolved code.
+
+**How I resolved the conflicts:**
+
+1. **Imports & Data Fetching:** I kept the `main` branch's approach (`import { cards } from "~encore/clients"`) instead of the feature branch's direct database queries (`cardsDB.queryAll`). Using Encore's service-to-service clients is the correct architectural pattern for microservices.
+2. **ChatRequest Interface:** I merged both, keeping the `context` property from the feature branch along with the `userId` from `main` just in case your frontend is still passing it.
+3. **Response Parsing:** I discarded the misplaced prompt string from the feature branch (`Context about available cards...`) because it was causing a syntax error. I kept the proper JSON response parsing logic from `main`.
+
+```typescript
 import { api, APIError } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 import { cards } from "~encore/clients";
@@ -9,6 +18,7 @@ const ELEVENLABS_VOICE_ID = "EXAVITQu4vr4xnSDxMaL";
 
 export interface ChatRequest {
   message: string;
+  context?: string;
   userId?: string;
 }
 
@@ -38,6 +48,7 @@ export const chat = api<ChatRequest, ChatResponse>(
   { expose: true, method: "POST", path: "/ai/chat" },
   async (req) => {
     let userPortfolioContext = "The user has not provided their portfolio, or they are not signed in.";
+    
     if (req.userId) {
       try {
         const portfolio = await cards.getUserPortfolio({ userId: req.userId });
@@ -165,3 +176,5 @@ export const speechToText = api<STTRequest, STTResponse>(
     return { transcript };
   }
 );
+
+```

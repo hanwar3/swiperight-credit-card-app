@@ -1,8 +1,20 @@
-import { api } from "encore.dev/api";
+Here is the resolved code.
+
+**How I resolved the conflicts:**
+
+1. **Imports & Data Fetching:** I kept the `main` branch's approach (`import { cards } from "~encore/clients"`) instead of the feature branch's direct database queries (`cardsDB.queryAll`). Using Encore's service-to-service clients is the correct architectural pattern for microservices.
+2. **ChatRequest Interface:** I merged both, keeping the `context` property from the feature branch along with the `userId` from `main` just in case your frontend is still passing it.
+3. **Response Parsing:** I discarded the misplaced prompt string from the feature branch (`Context about available cards...`) because it was causing a syntax error. I kept the proper JSON response parsing logic from `main`.
+
+```typescript
+import { api, APIError } from "encore.dev/api";
 import { secret } from "encore.dev/config";
-import { cardsDB } from "../cards/db";
+import { cards } from "~encore/clients";
 
 const geminiApiKey = secret("GeminiApiKey");
+const elevenLabsApiKey = secret("ElevenLabsApiKey");
+
+const ELEVENLABS_VOICE_ID = "EXAVITQu4vr4xnSDxMaL";
 
 export interface ChatRequest {
   message: string;
@@ -14,89 +26,155 @@ export interface ChatResponse {
   response: string;
 }
 
-// Processes user queries about credit card optimization and cashback strategies.
+export interface TTSRequest {
+  text: string;
+}
+
+export interface TTSResponse {
+  audioBase64: string;
+  mimeType: string;
+}
+
+export interface STTRequest {
+  audioBase64: string;
+  mimeType: string;
+}
+
+export interface STTResponse {
+  transcript: string;
+}
+
 export const chat = api<ChatRequest, ChatResponse>(
   { expose: true, method: "POST", path: "/ai/chat" },
   async (req) => {
-    let portfolioContext = "";
-
+    let userPortfolioContext = "The user has not provided their portfolio, or they are not signed in.";
+    
     if (req.userId) {
       try {
-        const portfolioRows = await cardsDB.queryAll`
-          SELECT up.id, up.card_id, up.nickname, c.name, c.issuer
-          FROM user_portfolios up
-          JOIN cards c ON up.card_id = c.id
-          WHERE up.user_id = ${req.userId} AND up.is_active = TRUE
-        `;
-
-        if (portfolioRows.length > 0) {
-          portfolioContext = "\n\nThe user has the following cards in their portfolio:\n";
-          for (const row of portfolioRows) {
-            const categoryRows = await cardsDB.queryAll`
-              SELECT category, cashback_rate
-              FROM card_categories
-              WHERE card_id = ${row.card_id}
-              ORDER BY cashback_rate DESC
-            `;
-
-            const categoriesText = categoryRows.map(c => `${c.cashback_rate}% on ${c.category}`).join(", ");
-            const cardName = row.nickname || row.name;
-            portfolioContext += `- ${cardName} (${row.issuer}): ${categoriesText}\n`;
-          }
-          portfolioContext += "\nPlease tailor your recommendations to these cards when answering questions about what card to use.";
+        const portfolio = await cards.getUserPortfolio({ userId: req.userId });
+        if (portfolio.cards.length > 0) {
+          const cardDescriptions = portfolio.cards.map(userCard => {
+            const categories = userCard.card.categories
+              .map(cat => `${cat.category} at ${cat.cashbackRate}%`)
+              .join(', ');
+            return `- ${userCard.nickname || userCard.card.name} (${userCard.card.issuer}): Offers ${categories}.`;
+          }).join('\n');
+          userPortfolioContext = `Here is the user's current credit card portfolio:\n${cardDescriptions}`;
+        } else {
+          userPortfolioContext = "The user has an empty portfolio.";
         }
-      } catch (err) {
-        console.error('Error fetching user portfolio for chat:', err);
+      } catch (error) {
+        console.error("Failed to fetch user portfolio for AI context:", error);
+        userPortfolioContext = "There was an error fetching the user's portfolio.";
       }
     }
 
-    const systemPrompt = `You are SwipeRight AI, an expert credit card advisor. Help users maximize their cashback and rewards by:
+    const systemPrompt = `You are SwipeRight AI, an expert credit card advisor. Your primary goal is to help users maximize their cashback and rewards by recommending the best card *from their portfolio* for a specific purchase.
 
-1. Recommending the best cards for specific purchases (groceries, gas, dining, etc.)
-2. Explaining how to track rotating category benefits and annual limits
-3. Providing strategies to optimize credit card usage
-4. Answering questions about credit card features and benefits
+    ${userPortfolioContext}
 
-Keep responses concise, helpful, and focused on maximizing rewards. Always consider the user's spending patterns and suggest practical advice.
+    When the user asks for a recommendation (e.g., "what card for groceries?"), first check their portfolio. If a card in their portfolio offers a good rate for that category, recommend it. Explain why it's a good choice (e.g., "Use your Amex Gold for groceries to get 4% back.").
 
-Context about available cards: Chase Freedom Flex (5% rotating categories), Chase Sapphire Reserve (3% travel/dining), Amex Gold (4% dining/groceries), Citi Double Cash (2% everything), Discover it (5% rotating), and many others.${portfolioContext}`;
+    If no card in their portfolio is a good fit, you can suggest other cards from the general database, but make it clear that these are not in the user's wallet.
 
-    try {
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-goog-api-key': geminiApiKey()
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: systemPrompt
-                },
-                {
-                  text: req.message
-                }
-              ]
-            }
-          ]
-        })
-      });
+    If the user asks a general question (e.g., "what are the best travel cards?"), you can answer more broadly using your general knowledge.
 
-      if (!response.ok) {
-        throw new Error(`Gemini API error: ${response.status}`);
-      }
+    Keep responses concise, helpful, and focused on maximizing rewards. Always prioritize the user's existing cards for spending recommendations. Keep answers brief and conversational since they may be spoken aloud.`;
 
-      const data = await response.json();
-      const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I couldn't process your request. Please try again.";
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-goog-api-key': geminiApiKey()
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              { text: systemPrompt },
+              { text: req.message }
+            ]
+          }
+        ]
+      })
+    });
 
-      return { response: aiResponse };
-    } catch (error) {
-      console.error('AI chat error:', error);
-      return { 
-        response: "I'm experiencing technical difficulties. Please try asking your question again in a moment." 
-      };
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error(`Gemini API error: ${response.status}`, errorBody);
+      throw APIError.internal("AI service error");
     }
+
+    const data = await response.json() as { candidates?: { content?: { parts?: { text?: string }[] } }[] };
+    const aiResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I couldn't process your request. Please try again.";
+
+    return { response: aiResponse };
   }
 );
+
+export const textToSpeech = api<TTSRequest, TTSResponse>(
+  { expose: true, method: "POST", path: "/ai/tts" },
+  async (req) => {
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVENLABS_VOICE_ID}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': elevenLabsApiKey(),
+      },
+      body: JSON.stringify({
+        text: req.text,
+        model_id: "eleven_turbo_v2_5",
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.75,
+          style: 0.0,
+          use_speaker_boost: true,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      console.error("ElevenLabs TTS error:", err);
+      throw APIError.internal("Text-to-speech service error");
+    }
+
+    const audioBuffer = await response.arrayBuffer();
+    const audioBase64 = Buffer.from(audioBuffer).toString('base64');
+
+    return { audioBase64, mimeType: "audio/mpeg" };
+  }
+);
+
+export const speechToText = api<STTRequest, STTResponse>(
+  { expose: true, method: "POST", path: "/ai/stt" },
+  async (req) => {
+    const audioBuffer = Buffer.from(req.audioBase64, 'base64');
+    const blob = new Blob([audioBuffer], { type: req.mimeType });
+
+    const formData = new FormData();
+    formData.append('file', blob, 'audio.webm');
+    formData.append('model_id', 'scribe_v1');
+
+    const response = await fetch('https://api.elevenlabs.io/v1/speech-to-text', {
+      method: 'POST',
+      headers: {
+        'xi-api-key': elevenLabsApiKey(),
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const err = await response.text();
+      console.error("ElevenLabs STT error:", err);
+      throw APIError.internal("Speech-to-text service error");
+    }
+
+    const data = await response.json() as { text?: string };
+    const transcript = data.text || "";
+
+    return { transcript };
+  }
+);
+
+```

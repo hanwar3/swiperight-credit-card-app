@@ -68,6 +68,7 @@ export const getUserPortfolio = api<{ userId: string }, UserPortfolioResponse>(
         issuer: row.issuer,
         imageUrl: row.image_url,
         annualFee: row.annual_fee,
+        network: row.network || 'Visa',
         categories
       };
       
@@ -148,6 +149,7 @@ export const addToPortfolio = api<AddToPortfolioRequest & { userId: string }, Us
       issuer: cardDetails!.issuer,
       imageUrl: cardDetails!.image_url,
       annualFee: cardDetails!.annual_fee,
+      network: cardDetails!.network || 'Visa',
       categories
     };
     
@@ -231,6 +233,7 @@ export const updatePortfolioCard = api<UpdatePortfolioCardRequest & { userId: st
       issuer: cardDetails!.issuer,
       imageUrl: cardDetails!.image_url,
       annualFee: cardDetails!.annual_fee,
+      network: cardDetails!.network || 'Visa',
       categories
     };
     

@@ -78,7 +78,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
         });
 
         if (searchResponse.ok) {
-          const searchData = await searchResponse.json();
+          const searchData = await searchResponse.json() as { cardKey?: string }[];
           if (searchData && searchData.length > 0) {
             const cardKey = searchData[0].cardKey;
             const imageResponse = await fetch(`https://rewards-credit-card-api.p.rapidapi.com/creditcard-card-image/${cardKey}`, {
@@ -90,14 +90,14 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
             });
 
             if (imageResponse.ok) {
-              const imageData = await imageResponse.json();
+              const imageData = await imageResponse.json() as { cardImageUrl?: string }[];
               if (imageData && imageData.length > 0 && imageData[0].cardImageUrl) {
                 const { issuer, network } = await inferCardDetails(cardName, req.issuer);
                 cardData = {
                   name: cardName,
                   issuer,
                   network,
-                  imageUrl: imageData[0].cardImageUrl,
+                  imageUrl: imageData[0].cardImageUrl!,
                   annualFee: 0, // These values would ideally come from the API
                   categories: [],
                   features: [],

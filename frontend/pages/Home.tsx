@@ -4,9 +4,35 @@ import { CreditCard, Target, TrendingUp, Sparkles, Shield, Users } from 'lucide-
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '../contexts/AuthContext';
+import backend from '~backend/client';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const { user } = useAuth();
+  const [expiringOffers, setExpiringOffers] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user?.userId) {
+      backend.cards.getUserMerchantOffers({ userId: user.userId })
+        .then(res => {
+          const now = new Date();
+          now.setHours(0, 0, 0, 0); // start of today
+          const soon = new Date();
+          soon.setDate(now.getDate() + 30);
+          soon.setHours(23, 59, 59, 999); // end of 30 days from now
+
+          const expiring = res.offers.filter(offer => {
+            if (!offer.endDate) return false;
+            // Parse 'YYYY-MM-DD' properly
+            const [year, month, day] = offer.endDate.split('-').map(Number);
+            const end = new Date(year, month - 1, day, 23, 59, 59, 999);
+            return end >= now && end <= soon;
+          });
+          setExpiringOffers(expiring);
+        })
+        .catch(err => console.error('Failed to fetch merchant offers:', err));
+    }
+  }, [user]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -31,6 +57,35 @@ export default function Home() {
           }
         </p>
       </div>
+
+      {/* Expiring Deals */}
+      {user && expiringOffers.length > 0 && (
+        <Card className="border border-orange-300 bg-orange-50 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <CardContent className="p-6">
+            <div className="flex items-start space-x-4">
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <Target className="h-6 w-6 text-orange-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-orange-900 mb-2 text-lg">Expiring Card Deals</h3>
+                <ul className="space-y-3">
+                  {expiringOffers.map(offer => (
+                    <li key={offer.id} className="text-sm text-orange-800 flex flex-col md:flex-row md:items-center md:justify-between border-b border-orange-200 pb-2 last:border-0 last:pb-0">
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-base">{offer.merchantName}</span>
+                        <span>{offer.offerDescription}</span>
+                      </div>
+                      <span className="mt-1 md:mt-0 px-2 py-1 bg-orange-200 text-orange-900 rounded text-xs font-medium self-start md:self-center">
+                        Expires: {offer.endDate}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

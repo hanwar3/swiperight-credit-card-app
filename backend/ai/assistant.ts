@@ -89,7 +89,7 @@ Guidelines:
         throw new Error(`Gemini API error: ${geminiResponse.status}`);
       }
 
-      const data = await geminiResponse.json();
+      const data = await geminiResponse.json() as any;
       const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "I couldn't determine the best card right now.";
 
       return { response: aiResponseText.trim() };

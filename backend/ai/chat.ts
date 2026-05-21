@@ -1,12 +1,3 @@
-Here is the resolved code.
-
-**How I resolved the conflicts:**
-
-1. **Imports & Data Fetching:** I kept the `main` branch's approach (`import { cards } from "~encore/clients"`) instead of the feature branch's direct database queries (`cardsDB.queryAll`). Using Encore's service-to-service clients is the correct architectural pattern for microservices.
-2. **ChatRequest Interface:** I merged both, keeping the `context` property from the feature branch along with the `userId` from `main` just in case your frontend is still passing it.
-3. **Response Parsing:** I discarded the misplaced prompt string from the feature branch (`Context about available cards...`) because it was causing a syntax error. I kept the proper JSON response parsing logic from `main`.
-
-```typescript
 import { api, APIError } from "encore.dev/api";
 import { secret } from "encore.dev/config";
 import { cards } from "~encore/clients";
@@ -53,13 +44,28 @@ export const chat = api<ChatRequest, ChatResponse>(
       try {
         const portfolio = await cards.getUserPortfolio({ userId: req.userId });
         if (portfolio.cards.length > 0) {
-          const cardDescriptions = portfolio.cards.map(userCard => {
+          const cardDescriptions = portfolio.cards.map((userCard: any) => {
             const categories = userCard.card.categories
-              .map(cat => `${cat.category} at ${cat.cashbackRate}%`)
+              .map((cat: any) => `${cat.category} at ${cat.cashbackRate}%`)
               .join(', ');
             return `- ${userCard.nickname || userCard.card.name} (${userCard.card.issuer}): Offers ${categories}.`;
           }).join('\n');
           userPortfolioContext = `Here is the user's current credit card portfolio:\n${cardDescriptions}`;
+          
+          // Inject active merchant offers
+          try {
+            const offersResponse = await cards.getUserMerchantOffers({ userId: req.userId });
+            const activeOffers = offersResponse.offers;
+            if (activeOffers.length > 0) {
+              const offerDescriptions = activeOffers.map((offer: any) => {
+                const expiryText = offer.endDate ? `, expiring on ${offer.endDate}` : '';
+                return `- ${offer.merchantName}: ${offer.offerDescription} on your ${offer.cardName}${expiryText}. (Special Cashback Rate: ${offer.cashbackRate || 0}%)`;
+              }).join('\n');
+              userPortfolioContext += `\n\nHere are the user's active and expiring merchant-specific offers:\n${offerDescriptions}`;
+            }
+          } catch (offerErr) {
+            console.error("Failed to fetch user merchant offers for AI context:", offerErr);
+          }
         } else {
           userPortfolioContext = "The user has an empty portfolio.";
         }
@@ -73,11 +79,11 @@ export const chat = api<ChatRequest, ChatResponse>(
 
     ${userPortfolioContext}
 
-    When the user asks for a recommendation (e.g., "what card for groceries?"), first check their portfolio. If a card in their portfolio offers a good rate for that category, recommend it. Explain why it's a good choice (e.g., "Use your Amex Gold for groceries to get 4% back.").
+    When the user asks for a recommendation (e.g., "what card for groceries?" or "what card for Best Buy?"), first check their portfolio and active/expiring merchant offers. If a card has an active merchant offer (e.g. 5% back at Best Buy) or high category cashback rate, recommend it immediately. Make sure to call out active merchant offers and mention if they are expiring soon to urge the user to utilize them.
 
-    If no card in their portfolio is a good fit, you can suggest other cards from the general database, but make it clear that these are not in the user's wallet.
+    If no card in their portfolio has a relevant category or offer, you can suggest other cards from the general database, but make it clear that these are not in the user's wallet.
 
-    If the user asks a general question (e.g., "what are the best travel cards?"), you can answer more broadly using your general knowledge.
+    If the user asks a general question, you can answer more broadly using your general knowledge.
 
     Keep responses concise, helpful, and focused on maximizing rewards. Always prioritize the user's existing cards for spending recommendations. Keep answers brief and conversational since they may be spoken aloud.`;
 
@@ -176,5 +182,3 @@ export const speechToText = api<STTRequest, STTResponse>(
     return { transcript };
   }
 );
-
-```

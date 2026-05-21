@@ -35,7 +35,8 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "../backend/encore-declarations.d.ts"
   ],
   "exclude": [
     "node_modules"

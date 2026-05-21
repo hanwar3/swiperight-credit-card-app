@@ -28,7 +28,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
 
     // First, try to find existing card by exact name match
     let existingCard = await cardsDB.queryRow`
-      SELECT id, name, issuer, image_url, annual_fee, network
+      SELECT id, name, issuer, image_url, annual_fee, network, type
       FROM cards 
       WHERE LOWER(name) = ${cardName.toLowerCase()}
     `;
@@ -57,6 +57,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
         imageUrl: existingCard.image_url || generateFallbackImageUrl(existingCard.name, existingCard.issuer, existingCard.network),
         annualFee: existingCard.annual_fee,
         network: existingCard.network || 'Visa',
+        type: existingCard.type || 'credit',
         categories
       };
 
@@ -92,7 +93,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
             if (imageResponse.ok) {
               const imageData = await imageResponse.json() as { cardImageUrl?: string }[];
               if (imageData && imageData.length > 0 && imageData[0].cardImageUrl) {
-                const { issuer, network } = await inferCardDetails(cardName, req.issuer);
+                const { issuer, network, type } = await inferCardDetails(cardName, req.issuer);
                 cardData = {
                   name: cardName,
                   issuer,
@@ -101,7 +102,8 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
                   annualFee: 0, // These values would ideally come from the API
                   categories: [],
                   features: [],
-                  creditRange: 'Good to Excellent'
+                  creditRange: 'Good to Excellent',
+                  type
                 };
                 fromExternalApi = true;
               }
@@ -115,7 +117,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
 
     // If no external data, use manual inference
     if (!cardData) {
-      const { issuer, network, imageUrl } = await inferCardDetails(cardName, req.issuer);
+      const { issuer, network, imageUrl, type } = await inferCardDetails(cardName, req.issuer);
       cardData = {
         name: cardName,
         issuer,
@@ -128,7 +130,8 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
           isRotating: false
         }],
         features: [],
-        creditRange: 'Good to Excellent'
+        creditRange: 'Good to Excellent',
+        type
       };
     }
 
@@ -136,7 +139,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
     const newCard = await cardsDB.queryRow`
       INSERT INTO cards (
         name, issuer, image_url, annual_fee, network, 
-        features, welcome_bonus, credit_range, apply_url
+        features, welcome_bonus, credit_range, apply_url, type
       )
       VALUES (
         ${cardData.name}, 
@@ -147,9 +150,10 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
         ${JSON.stringify(cardData.features || [])},
         ${cardData.welcomeBonus || null},
         ${cardData.creditRange || 'Good to Excellent'},
-        ${cardData.applyUrl || null}
+        ${cardData.applyUrl || null},
+        ${cardData.type || 'credit'}
       )
-      RETURNING id, name, issuer, image_url, annual_fee, network
+      RETURNING id, name, issuer, image_url, annual_fee, network, type
     `;
 
     if (!newCard) {
@@ -201,6 +205,7 @@ export const addCard = api<AddCardRequest, AddCardResponse>(
       imageUrl: newCard.image_url || generateFallbackImageUrl(newCard.name, newCard.issuer, newCard.network),
       annualFee: newCard.annual_fee,
       network: newCard.network || 'Visa',
+      type: newCard.type || 'credit',
       categories
     };
 
@@ -212,12 +217,14 @@ async function inferCardDetails(cardName: string, providedIssuer?: string): Prom
   issuer: string;
   network: string;
   imageUrl: string;
+  type: string;
 }> {
   const name = cardName.toLowerCase();
   
   // Infer issuer from card name
   let issuer = providedIssuer || 'Unknown';
   let network = 'Visa'; // Default network
+  let type = name.includes('debit') ? 'debit' : 'credit';
   
   if (name.includes('chase')) {
     issuer = 'Chase';
@@ -248,7 +255,7 @@ async function inferCardDetails(cardName: string, providedIssuer?: string): Prom
   // Try to fetch image from web sources
   const imageUrl = await fetchCardImage(cardName, issuer);
   
-  return { issuer, network, imageUrl };
+  return { issuer, network, imageUrl, type };
 }
 
 async function fetchCardImage(cardName: string, issuer: string): Promise<string> {

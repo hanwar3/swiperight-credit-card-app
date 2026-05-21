@@ -1,6 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { authDB } from "./db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
 export interface ForgotPasswordRequest {

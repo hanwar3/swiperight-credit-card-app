@@ -164,8 +164,8 @@ export default function Cards() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-gray-900">Credit Cards</h1>
-          <p className="text-gray-600">Explore our comprehensive database and manage your portfolio</p>
+          <h1 className="text-3xl font-bold text-gray-900">Credit & Debit Cards</h1>
+          <p className="text-gray-600">Explore our comprehensive database and manage your card portfolio</p>
         </div>
         
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
@@ -177,7 +177,7 @@ export default function Cards() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add New Credit Card</DialogTitle>
+              <DialogTitle>Add New Credit or Debit Card</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
               <div className="space-y-2">
@@ -524,6 +524,9 @@ function ComprehensiveCardComponent({
                     {card.network}
                   </Badge>
                 )}
+                <Badge className={`text-xs font-semibold ${card.type === 'debit' ? 'bg-cyan-100 text-cyan-800 border-cyan-200' : 'bg-purple-100 text-purple-800 border-purple-200'}`}>
+                  {card.type === 'debit' ? 'Debit' : 'Credit'}
+                </Badge>
               </div>
             </div>
           </div>
@@ -692,6 +695,9 @@ function PortfolioCardComponent({ userCard }: { userCard: UserCard }) {
                   {card.network}
                 </Badge>
               )}
+              <Badge className={`text-xs font-semibold ${card.type === 'debit' ? 'bg-cyan-100 text-cyan-800 border-cyan-200' : 'bg-purple-100 text-purple-800 border-purple-200'}`}>
+                {card.type === 'debit' ? 'Debit' : 'Credit'}
+              </Badge>
             </div>
           </div>
         </div>

@@ -52,6 +52,12 @@ export default function Recommendations() {
   const portfolioRecommendations = recommendationsData?.portfolioRecommendations || [];
   const merchantOffers = merchantOffersData?.offers || [];
 
+  const bestPortfolioCredit = portfolioRecommendations.find(r => r.card.type === 'credit');
+  const bestPortfolioDebit = portfolioRecommendations.find(r => r.card.type === 'debit');
+
+  const bestCreditCard = allRecommendations.find(r => r.card.type === 'credit');
+  const bestDebitCard = allRecommendations.find(r => r.card.type === 'debit');
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
       {/* Header */}
@@ -69,7 +75,7 @@ export default function Recommendations() {
         </h1>
         
         <p className="text-gray-600 max-w-2xl mx-auto">
-          Tell us what you're buying and we'll recommend the best credit cards to maximize your rewards.
+          Tell us what you're buying and we'll recommend the best cards in your portfolio and overall to maximize your rewards.
         </p>
       </div>
 
@@ -176,6 +182,98 @@ export default function Recommendations() {
             </Card>
           )}
 
+          {/* Smart Portfolio Maximization Strategy */}
+          {user && portfolioRecommendations.length > 0 && (
+            <Card className="border-0 bg-gradient-to-br from-indigo-950 via-slate-900 to-teal-950 text-white shadow-xl overflow-hidden relative border border-slate-800">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <CardContent className="p-6 relative z-10 space-y-4">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="h-5 w-5 text-teal-400" />
+                  <h3 className="font-bold text-lg text-teal-300">Your Swipe Strategy for "{recommendationsData?.category}"</h3>
+                </div>
+                
+                {/* Comparison Details */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                  {/* Credit Card Option */}
+                  <div className="p-4 bg-white/5 rounded-xl border border-white/10 flex flex-col justify-between hover:bg-white/10 transition-colors">
+                    <div>
+                      <span className="text-xs font-semibold text-indigo-300 uppercase tracking-wider">Best Portfolio Credit Card</span>
+                      {bestPortfolioCredit ? (
+                        <div className="mt-2">
+                          <h4 className="font-bold text-white text-base">{bestPortfolioCredit.portfolioNickname || bestPortfolioCredit.card.name}</h4>
+                          <p className="text-xs text-slate-400">{bestPortfolioCredit.card.issuer}</p>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-slate-400 mt-2">No Credit Cards added for this category</p>
+                      )}
+                    </div>
+                    {bestPortfolioCredit && (
+                      <div className="mt-4 flex items-baseline justify-between border-t border-white/5 pt-3">
+                        <span className="text-xs text-slate-400">Cashback Rate</span>
+                        <span className="text-xl font-bold text-indigo-400">{bestPortfolioCredit.relevantCategory.cashbackRate}%</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Debit Card Option */}
+                  <div className="p-4 bg-white/5 rounded-xl border border-white/10 flex flex-col justify-between hover:bg-white/10 transition-colors">
+                    <div>
+                      <span className="text-xs font-semibold text-teal-300 uppercase tracking-wider">Best Portfolio Debit Card</span>
+                      {bestPortfolioDebit ? (
+                        <div className="mt-2">
+                          <h4 className="font-bold text-white text-base">{bestPortfolioDebit.portfolioNickname || bestPortfolioDebit.card.name}</h4>
+                          <p className="text-xs text-slate-400">{bestPortfolioDebit.card.issuer}</p>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-slate-400 mt-2">No Debit Cards added for this category</p>
+                      )}
+                    </div>
+                    {bestPortfolioDebit && (
+                      <div className="mt-4 flex items-baseline justify-between border-t border-white/5 pt-3">
+                        <span className="text-xs text-slate-400">Cashback Rate</span>
+                        <span className="text-xl font-bold text-teal-400">{bestPortfolioDebit.relevantCategory.cashbackRate}%</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Ultimate Decision banner */}
+                {(() => {
+                  const creditRate = bestPortfolioCredit?.relevantCategory.cashbackRate || 0;
+                  const debitRate = bestPortfolioDebit?.relevantCategory.cashbackRate || 0;
+                  
+                  if (creditRate === 0 && debitRate === 0) return null;
+                  
+                  const winner = creditRate >= debitRate ? bestPortfolioCredit : bestPortfolioDebit;
+                  const rateDiff = Math.abs(creditRate - debitRate);
+                  
+                  return (
+                    <div className="mt-4 p-4 bg-gradient-to-r from-teal-500/20 to-indigo-500/20 border border-teal-500/30 rounded-xl flex items-center justify-between">
+                      <div className="space-y-1">
+                        <span className="text-xs font-semibold text-teal-400 uppercase tracking-wider">Recommended Swipe</span>
+                        <p className="text-sm text-slate-200">
+                          Use your <strong className="text-white">{winner?.portfolioNickname || winner?.card.name}</strong> ({winner?.card.type}) to earn <strong className="text-teal-400 font-bold">{winner?.relevantCategory.cashbackRate}% back</strong>!
+                        </p>
+                        {rateDiff > 0 && bestPortfolioCredit && bestPortfolioDebit && (
+                          <p className="text-xs text-slate-400">
+                            This earns {rateDiff.toFixed(1)}% more than your best {winner?.card.type === 'credit' ? 'debit' : 'credit'} card.
+                          </p>
+                        )}
+                      </div>
+                      <div className="hidden sm:block">
+                        <Badge className="bg-teal-500 hover:bg-teal-600 text-white font-bold px-3 py-1 text-sm shadow-md animate-pulse">
+                          +{winner?.relevantCategory.cashbackRate}% Back
+                        </Badge>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Recommendations Tabs */}
           <Tabs defaultValue="all" className="w-full">
             <TabsList className="grid w-full grid-cols-2">
@@ -192,6 +290,8 @@ export default function Recommendations() {
                   recommendation={recommendation} 
                   rank={index + 1} 
                   category={category} 
+                  isBestCredit={recommendation.card.id === bestCreditCard?.card.id}
+                  isBestDebit={recommendation.card.id === bestDebitCard?.card.id}
                 />
               ))}
             </TabsContent>
@@ -212,6 +312,8 @@ export default function Recommendations() {
                       rank={index + 1} 
                       category={category}
                       isPortfolioCard={true}
+                      isBestCredit={recommendation.card.id === bestPortfolioCredit?.card.id}
+                      isBestDebit={recommendation.card.id === bestPortfolioDebit?.card.id}
                     />
                   ))}
                 </>
@@ -245,12 +347,16 @@ function RecommendationCard({
   recommendation, 
   rank, 
   category, 
-  isPortfolioCard = false 
+  isPortfolioCard = false,
+  isBestCredit = false,
+  isBestDebit = false
 }: { 
   recommendation: CardRecommendation; 
   rank: number; 
   category: string;
   isPortfolioCard?: boolean;
+  isBestCredit?: boolean;
+  isBestDebit?: boolean;
 }) {
   const { card, relevantCategory, isInPortfolio, portfolioNickname, relevantOffers } = recommendation;
   const isTopChoice = rank === 1;
@@ -304,9 +410,22 @@ function RecommendationCard({
           <div className="flex-1 space-y-3">
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-semibold text-gray-900 flex items-center space-x-2">
+                <h3 className="font-semibold text-gray-900 flex flex-wrap items-center gap-2">
                   <span>{portfolioNickname || card.name}</span>
-                  {isTopChoice && !isPortfolioCard && (
+                  <Badge className={card.type === 'debit' ? 'bg-indigo-50 text-indigo-700 border-indigo-200' : 'bg-slate-50 text-slate-700 border-slate-200'} variant="outline">
+                    {card.type === 'debit' ? 'Debit' : 'Credit'}
+                  </Badge>
+                  {isBestCredit && (
+                    <Badge className="bg-gradient-to-r from-indigo-500 to-blue-600 text-white font-medium">
+                      Best Credit
+                    </Badge>
+                  )}
+                  {isBestDebit && (
+                    <Badge className="bg-gradient-to-r from-teal-500 to-emerald-600 text-white font-medium">
+                      Best Debit
+                    </Badge>
+                  )}
+                  {isTopChoice && !isPortfolioCard && !isBestCredit && !isBestDebit && (
                     <Badge className="bg-gradient-to-r from-teal-500 to-green-500 text-white">
                       <Star className="h-3 w-3 mr-1" />
                       Best Choice

@@ -59,33 +59,65 @@ export default function Home() {
       </div>
 
       {/* Expiring Deals */}
-      {user && expiringOffers.length > 0 && (
-        <Card className="border border-orange-300 bg-orange-50 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
-          <CardContent className="p-6">
-            <div className="flex items-start space-x-4">
-              <div className="p-2 bg-orange-100 rounded-lg">
-                <Target className="h-6 w-6 text-orange-600" />
+      {user && expiringOffers.length > 0 && (() => {
+        const getDaysLeft = (endDateStr: string) => {
+          const now = new Date();
+          now.setHours(0, 0, 0, 0);
+          const [year, month, day] = endDateStr.split('-').map(Number);
+          const end = new Date(year, month - 1, day);
+          const diffTime = end.getTime() - now.getTime();
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          return diffDays;
+        };
+
+        return (
+          <Card className="border border-amber-500/30 bg-gray-900/40 backdrop-blur-lg shadow-[0_0_20px_rgba(245,158,11,0.15)] animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <CardContent className="p-6">
+              <div className="flex items-start space-x-4">
+                <div className="p-3 bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-xl shadow-[0_0_10px_rgba(245,158,11,0.2)]">
+                  <Target className="h-6 w-6 text-amber-400" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-white mb-3 text-lg flex items-center space-x-2">
+                    <span>Expiring Card Offers</span>
+                    <span className="text-xs bg-amber-500/30 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-semibold animate-pulse">
+                      Action Required
+                    </span>
+                  </h3>
+                  <ul className="space-y-4">
+                    {expiringOffers.map(offer => {
+                      const daysLeft = getDaysLeft(offer.endDate);
+                      const isUrgent = daysLeft <= 7;
+                      return (
+                        <li key={offer.id} className="text-sm flex flex-col md:flex-row md:items-center md:justify-between border-b border-white/5 pb-3 last:border-0 last:pb-0">
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-white text-base flex items-center space-x-2">
+                              <span>{offer.merchantName}</span>
+                              <span className="text-xs font-normal text-teal-400">({offer.cardName})</span>
+                            </span>
+                            <span className="text-gray-400 text-xs mt-0.5">{offer.offerDescription}</span>
+                          </div>
+                          <div className="flex items-center space-x-2 mt-2 md:mt-0">
+                            {isUrgent ? (
+                              <span className="px-3 py-1 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-full text-xs font-semibold shadow-[0_0_8px_rgba(244,63,94,0.3)] animate-pulse">
+                                🚨 {daysLeft === 0 ? 'Expires Today' : daysLeft === 1 ? 'Expires Tomorrow' : `${daysLeft} days left`}
+                              </span>
+                            ) : (
+                              <span className="px-3 py-1 bg-amber-500/10 text-amber-300 border border-amber-500/20 rounded-full text-xs font-medium">
+                                Expires: {offer.endDate}
+                              </span>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="font-semibold text-orange-900 mb-2 text-lg">Expiring Card Deals</h3>
-                <ul className="space-y-3">
-                  {expiringOffers.map(offer => (
-                    <li key={offer.id} className="text-sm text-orange-800 flex flex-col md:flex-row md:items-center md:justify-between border-b border-orange-200 pb-2 last:border-0 last:pb-0">
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-base">{offer.merchantName}</span>
-                        <span>{offer.offerDescription}</span>
-                      </div>
-                      <span className="mt-1 md:mt-0 px-2 py-1 bg-orange-200 text-orange-900 rounded text-xs font-medium self-start md:self-center">
-                        Expires: {offer.endDate}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        );
+      })()}
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

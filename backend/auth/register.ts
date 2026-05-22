@@ -1,6 +1,6 @@
 import { api, APIError } from "encore.dev/api";
 import { authDB } from "./db";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 export interface RegisterRequest {
   email: string;

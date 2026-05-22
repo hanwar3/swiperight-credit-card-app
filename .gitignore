@@ -2,5 +2,12 @@
 encore.gen.go
 encore.gen.cue
 /.encore
-node_modules
+node_modules/
 /encore.gen
+dist/
+/frontend/dist/
+/frontend/node_modules/
+.env
+.env.local
+.env.*.local
+*.log

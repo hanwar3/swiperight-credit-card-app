@@ -4,15 +4,13 @@
   "type": "module",
   "packageManager": "bun",
   "scripts": {
-    "build": "cd ../frontend && bun install && npx vite build --outDir=../backend/frontend/dist"
+    "build": "cd ../frontend \u0026\u0026 bun install \u0026\u0026 vite build --outDir=../backend/frontend/dist"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "encore.dev": "^1.56.3"
+    "bcrypt": "^5.1.1",
+    "encore.dev": "^1.48.8"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/node": "^25.9.0",
     "typescript": "^5.8.3"
   }
 }

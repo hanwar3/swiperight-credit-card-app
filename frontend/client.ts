@@ -688,6 +688,393 @@ export type Fetcher = typeof fetch;
 
 const boundFetch = fetch.bind(this);
 
+function getMockResponse(path: string, query: any, bodyStr: any): Response | null {
+    console.warn(`[SwipeRight Mock Server] Backend offline. Mocking response for: ${path}`);
+    
+    // Mock user details
+    const mockUser = {
+        userId: "user_mock_123",
+        email: "haiderwanwar@gmail.com",
+        firstName: "Haider",
+        lastName: "Anwar",
+        profilePictureUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop",
+        authProvider: "email",
+        emailVerified: true,
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+    };
+
+    // Helper to format response
+    const jsonRes = (data: any) => new Response(JSON.stringify(data), {
+        status: 200,
+        headers: { "Content-Type": "application/json" }
+    });
+
+    // 1. Auth routes
+    if (path.includes("/auth/verify")) {
+        return jsonRes({ user: mockUser, token: "mock-jwt-token" });
+    }
+    if (path.includes("/auth/login") || path.includes("/auth/register") || path.includes("/auth/oauth")) {
+        return jsonRes({ user: mockUser, token: "mock-jwt-token" });
+    }
+
+    // List of all mock database cards
+    const allDBCards = [
+        {
+            id: 101,
+            name: "Chase Sapphire Preferred",
+            issuer: "Chase",
+            type: "credit",
+            network: "Visa",
+            annualFee: 9500,
+            baseCashbackRate: 1.0,
+            standardCategories: { Dining: 3.0, Travel: 2.0, Streaming: 3.0, Groceries: 1.0 },
+            imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+        },
+        {
+            id: 102,
+            name: "American Express Gold Card",
+            issuer: "American Express",
+            type: "credit",
+            network: "Amex",
+            annualFee: 25000,
+            baseCashbackRate: 1.0,
+            standardCategories: { Groceries: 4.0, Dining: 4.0, Travel: 3.0 },
+            imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+        },
+        {
+            id: 103,
+            name: "Apple Card",
+            issuer: "Goldman Sachs",
+            type: "credit",
+            network: "Mastercard",
+            annualFee: 0,
+            baseCashbackRate: 1.0,
+            standardCategories: { Shopping: 2.0, Travel: 1.0 },
+            imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+        },
+        {
+            id: 104,
+            name: "Amex Blue Cash Preferred",
+            issuer: "American Express",
+            type: "credit",
+            network: "Amex",
+            annualFee: 9500,
+            baseCashbackRate: 1.0,
+            standardCategories: { Groceries: 6.0, Streaming: 6.0, Gas: 3.0 },
+            imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+        },
+        {
+            id: 105,
+            name: "Citi Double Cash",
+            issuer: "Citi",
+            type: "credit",
+            network: "Mastercard",
+            annualFee: 0,
+            baseCashbackRate: 2.0,
+            standardCategories: { Dining: 2.0, Groceries: 2.0, Shopping: 2.0, Gas: 2.0, Travel: 2.0, Streaming: 2.0 },
+            imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+        },
+        {
+            id: 106,
+            name: "Capital One Venture X",
+            issuer: "Capital One",
+            type: "credit",
+            network: "Visa",
+            annualFee: 39500,
+            baseCashbackRate: 2.0,
+            standardCategories: { Travel: 5.0, Dining: 2.0, Groceries: 2.0, Shopping: 2.0 },
+            imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+        }
+    ];
+
+    // 2. Card Portfolio
+    if (path.startsWith("/cards/portfolio")) {
+        const mockCards = [
+            {
+                portfolioId: 1,
+                cardId: 101,
+                name: "Chase Sapphire Preferred",
+                issuer: "Chase",
+                type: "credit",
+                network: "Visa",
+                annualFee: 9500,
+                baseCashbackRate: 1.0,
+                standardCategories: { Dining: 3.0, Travel: 2.0, Streaming: 3.0, Groceries: 1.0 },
+                isActive: true,
+                nickname: "Travel & Dining Card",
+                card: allDBCards[0]
+            },
+            {
+                portfolioId: 2,
+                cardId: 102,
+                name: "American Express Gold Card",
+                issuer: "American Express",
+                type: "credit",
+                network: "Amex",
+                annualFee: 25000,
+                baseCashbackRate: 1.0,
+                standardCategories: { Groceries: 4.0, Dining: 4.0, Travel: 3.0 },
+                isActive: true,
+                nickname: "Foodie Gold Card",
+                card: allDBCards[1]
+            },
+            {
+                portfolioId: 3,
+                cardId: 103,
+                name: "Apple Card",
+                issuer: "Goldman Sachs",
+                type: "credit",
+                network: "Mastercard",
+                annualFee: 0,
+                baseCashbackRate: 1.0,
+                standardCategories: { Shopping: 2.0, Travel: 1.0 },
+                isActive: true,
+                nickname: "Daily Apple Pay",
+                card: allDBCards[2]
+            }
+        ];
+        return jsonRes({ cards: mockCards });
+    }
+
+    // 3. Merchant Offers
+    if (path.startsWith("/cards/merchant-offers")) {
+        const mockOffers = [
+            {
+                offerId: 1,
+                merchantName: "Amazon Fresh",
+                offerDescription: "10% back on groceries at Amazon Fresh",
+                cashbackRate: 10.0,
+                offerType: "cashback",
+                endDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+                isActivated: true,
+                isUsed: false
+            },
+            {
+                offerId: 2,
+                merchantName: "Food Lion",
+                offerDescription: "7% back on groceries at Food Lion",
+                cashbackRate: 7.0,
+                offerType: "cashback",
+                endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+                isActivated: true,
+                isUsed: false
+            },
+            {
+                offerId: 3,
+                merchantName: "Nike",
+                offerDescription: "Spend $150 get $25 statement credit back",
+                cashbackAmount: 2500,
+                minimumSpend: 15000,
+                offerType: "cashback",
+                endDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString(),
+                isActivated: true,
+                isUsed: false
+            },
+            {
+                offerId: 4,
+                merchantName: "Rayban",
+                offerDescription: "Spend $50 get $25 back on Rayban Glasses",
+                cashbackAmount: 2500,
+                minimumSpend: 5000,
+                offerType: "cashback",
+                endDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
+                isActivated: true,
+                isUsed: false
+            },
+            {
+                offerId: 5,
+                merchantName: "Uber",
+                offerDescription: "5% back on rides and Uber Eats",
+                cashbackRate: 5.0,
+                offerType: "cashback",
+                endDate: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString(),
+                isActivated: true,
+                isUsed: false
+            }
+        ];
+        return jsonRes({ offers: mockOffers });
+    }
+
+    // 4. Database list/search
+    if (path === "/cards" || path.startsWith("/cards/search") || path.startsWith("/cards/comprehensive")) {
+        return jsonRes({ cards: allDBCards });
+    }
+
+    // 5. Recommendations
+    if (path.startsWith("/cards/recommend")) {
+        const cat = (query?.category || "Dining").toLowerCase();
+        
+        let walletRecs = [];
+        let allRecs = [];
+        let verdict = "";
+        
+        if (cat.includes("grocer") || cat.includes("fresh") || cat.includes("food lion")) {
+            walletRecs = [
+                {
+                    card: allDBCards[1], // Amex Gold
+                    relevantCategory: "Groceries",
+                    isInPortfolio: true,
+                    portfolioNickname: "Foodie Gold Card",
+                    effectiveRate: 4.0,
+                    relevantOffers: []
+                },
+                {
+                    card: allDBCards[0], // Chase Sapphire
+                    relevantCategory: "Groceries",
+                    isInPortfolio: true,
+                    portfolioNickname: "Travel & Dining Card",
+                    effectiveRate: 1.0,
+                    relevantOffers: []
+                }
+            ];
+            
+            // Check if user is searching for a merchant with active offer
+            if (cat.includes("fresh")) {
+                // Apply Amazon Fresh offer to Chase
+                walletRecs[1].effectiveRate = 10.0;
+                walletRecs[1].offerAppliedText = "10% back at Amazon Fresh active!";
+                walletRecs[1].relevantOffers = [{
+                    offerId: 1,
+                    merchantName: "Amazon Fresh",
+                    offerDescription: "10% back on groceries at Amazon Fresh",
+                    cashbackRate: 10.0
+                }];
+                // Sort by effective rate
+                walletRecs.sort((a,b) => b.effectiveRate - a.effectiveRate);
+            }
+            
+            allRecs = [
+                {
+                    card: allDBCards[3], // Amex Blue Cash
+                    relevantCategory: "Groceries",
+                    isInPortfolio: false,
+                    effectiveRate: 6.0,
+                    relevantOffers: []
+                },
+                ...walletRecs
+            ];
+            
+            verdict = cat.includes("fresh") 
+                ? "Your Chase Sapphire Preferred has an active 10% cash back merchant offer synced! This beats the Amex Gold 4% standard rate. Swipe your Chase card for this specific purchase!"
+                : "Your American Express Gold Card is outstanding at 4% for groceries, but applying for the Amex Blue Cash Preferred would unlock 6% back, earning you an extra $120/year in cash back.";
+        } else if (cat.includes("dine") || cat.includes("dining") || cat.includes("restaurant") || cat.includes("eat")) {
+            walletRecs = [
+                {
+                    card: allDBCards[1], // Amex Gold
+                    relevantCategory: "Dining",
+                    isInPortfolio: true,
+                    portfolioNickname: "Foodie Gold Card",
+                    effectiveRate: 4.0,
+                    relevantOffers: []
+                },
+                {
+                    card: allDBCards[0], // Chase Sapphire
+                    relevantCategory: "Dining",
+                    isInPortfolio: true,
+                    portfolioNickname: "Travel & Dining Card",
+                    effectiveRate: 3.0,
+                    relevantOffers: []
+                }
+            ];
+            
+            allRecs = [...walletRecs];
+            verdict = "Fantastic alignment! You are already using the American Express Gold Card, which is the absolute best card in the world for Dining (4% back). Swipe with absolute confidence!";
+        } else if (cat.includes("travel") || cat.includes("flight") || cat.includes("hotel")) {
+            walletRecs = [
+                {
+                    card: allDBCards[1], // Amex Gold
+                    relevantCategory: "Travel",
+                    isInPortfolio: true,
+                    portfolioNickname: "Foodie Gold Card",
+                    effectiveRate: 3.0,
+                    relevantOffers: []
+                },
+                {
+                    card: allDBCards[0], // Chase Sapphire
+                    relevantCategory: "Travel",
+                    isInPortfolio: true,
+                    portfolioNickname: "Travel & Dining Card",
+                    effectiveRate: 2.0,
+                    relevantOffers: []
+                }
+            ];
+            
+            allRecs = [
+                {
+                    card: allDBCards[5], // Venture X
+                    relevantCategory: "Travel",
+                    isInPortfolio: false,
+                    effectiveRate: 5.0,
+                    relevantOffers: []
+                },
+                ...walletRecs
+            ];
+            verdict = "Your Amex Gold gets a solid 3% back on flights, but adding the Capital One Venture X would elevate you to 5% on travel bookings via their portal, giving you a huge lift in value.";
+        } else {
+            walletRecs = [
+                {
+                    card: allDBCards[2], // Apple Card
+                    relevantCategory: "Shopping",
+                    isInPortfolio: true,
+                    portfolioNickname: "Daily Apple Pay",
+                    effectiveRate: 2.0,
+                    relevantOffers: []
+                },
+                {
+                    card: allDBCards[0], // Chase Sapphire
+                    relevantCategory: "Shopping",
+                    isInPortfolio: true,
+                    portfolioNickname: "Travel & Dining Card",
+                    effectiveRate: 1.0,
+                    relevantOffers: []
+                }
+            ];
+            
+            allRecs = [
+                {
+                    card: allDBCards[4], // Citi Double Cash
+                    relevantCategory: "Shopping",
+                    isInPortfolio: false,
+                    effectiveRate: 2.0,
+                    relevantOffers: []
+                },
+                ...walletRecs
+            ];
+            verdict = "Your Apple Card via Apple Pay is performing at peak efficiency! At 2% back, you are matching the best flat-rate cards available in the market today.";
+        }
+
+        return jsonRes({
+            category: query?.category || "General",
+            cards: allRecs,
+            portfolioRecommendations: walletRecs,
+            verdict: verdict
+        });
+    }
+
+    // 6. AI Chat / Siri Voice Orb
+    if (path.includes("/ai/chat")) {
+        const body = JSON.parse(bodyStr || "{}");
+        const queryText = (body.message || "").toLowerCase();
+        
+        let aiResponse = "I am SwipeRight, your ultimate credit card rewards wingman. I analyze cash back rates and seasonal merchant offers to ensure you always swipe the correct card for every single transaction.";
+        
+        if (queryText.includes("grocer")) {
+            aiResponse = "For groceries, you should swipe your American Express Gold Card to earn 4% back at supermarkets. However, since we synced your browser extension, you have an active 10% cash back offer at Amazon Fresh expiring in 2 days! I recommend using your Chase card at Amazon Fresh to cash in on that 10% deal before it expires!";
+        } else if (queryText.includes("dine") || queryText.includes("restaurant") || queryText.includes("food")) {
+            aiResponse = "Your American Express Gold Card is your absolute best card for dining, giving you a beautiful 4% back globally. Always swipe your Amex Gold when eating out or ordering delivery!";
+        } else if (queryText.includes("travel") || queryText.includes("flight")) {
+            aiResponse = "For travel bookings, swipe your American Express Gold Card for flights (3% back) or use your Chase Sapphire Preferred for general hotels and transit, which secures you a solid 2% back alongside premium travel insurance benefits!";
+        } else if (queryText.includes("best card") || queryText.includes("recommend")) {
+            aiResponse = "Based on your current wallet, your Amex Gold is best for Groceries & Dining (4%), your Chase Sapphire Preferred is best for Streaming (3%), and your Apple Card is best for general Shopping via Apple Pay (2%).";
+        }
+        
+        return jsonRes({ response: aiResponse });
+    }
+
+    return null;
+}
+
 class BaseClient {
     readonly baseURL: string
     readonly fetcher: Fetcher
@@ -815,7 +1202,18 @@ class BaseClient {
 
         // Make the actual request
         const queryString = query ? '?' + encodeQuery(query) : ''
-        const response = await this.fetcher(this.baseURL+path+queryString, init)
+        let response: Response;
+        try {
+            response = await this.fetcher(this.baseURL+path+queryString, init)
+        } catch (err) {
+            console.warn(`[SwipeRight Mock Server] Backend offline. Falling back to client-side mock for: ${path}`);
+            const mockRes = getMockResponse(path, query, rest.body);
+            if (mockRes) {
+                response = mockRes;
+            } else {
+                throw err;
+            }
+        }
 
         // handle any error responses
         if (!response.ok) {

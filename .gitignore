@@ -11,3 +11,5 @@ dist/
 .env.local
 .env.*.local
 *.log
+.secrets.local.cue
+

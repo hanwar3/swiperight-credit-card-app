@@ -4,7 +4,7 @@
   "type": "module",
   "packageManager": "npm",
   "scripts": {
-    "build": "cd ../frontend && bun install && vite build --outDir=../backend/frontend/dist"
+    "build": "cd ../frontend && npm install && node \"../node_modules/vite/bin/vite.js\" build --outDir=../backend/frontend/dist"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

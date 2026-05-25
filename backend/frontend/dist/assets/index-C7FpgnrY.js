@@ -18459,18 +18459,18 @@ const createLucideIcon = (iconName, iconNode) => {
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$G = [
+const __iconNode$I = [
   ["path", { d: "M5 12h14", key: "1ays0h" }],
   ["path", { d: "m12 5 7 7-7 7", key: "xquz4c" }]
 ];
-const ArrowRight = createLucideIcon("arrow-right", __iconNode$G);
+const ArrowRight = createLucideIcon("arrow-right", __iconNode$I);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$F = [
+const __iconNode$H = [
   [
     "path",
     {
@@ -18480,14 +18480,14 @@ const __iconNode$F = [
   ],
   ["circle", { cx: "12", cy: "8", r: "6", key: "1vp47v" }]
 ];
-const Award = createLucideIcon("award", __iconNode$F);
+const Award = createLucideIcon("award", __iconNode$H);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$E = [
+const __iconNode$G = [
   ["path", { d: "M12 8V4H8", key: "hb8ula" }],
   ["rect", { width: "16", height: "12", x: "4", y: "8", rx: "2", key: "enze0r" }],
   ["path", { d: "M2 14h2", key: "vft8re" }],
@@ -18495,31 +18495,58 @@ const __iconNode$E = [
   ["path", { d: "M15 13v2", key: "1xurst" }],
   ["path", { d: "M9 13v2", key: "rq6x2g" }]
 ];
-const Bot = createLucideIcon("bot", __iconNode$E);
+const Bot = createLucideIcon("bot", __iconNode$G);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$D = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
-const Check = createLucideIcon("check", __iconNode$D);
+const __iconNode$F = [
+  ["path", { d: "M8 2v4", key: "1cmpym" }],
+  ["path", { d: "M16 2v4", key: "4m81vk" }],
+  ["rect", { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" }],
+  ["path", { d: "M3 10h18", key: "8toen8" }]
+];
+const Calendar = createLucideIcon("calendar", __iconNode$F);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$C = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
-const ChevronDown = createLucideIcon("chevron-down", __iconNode$C);
+const __iconNode$E = [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]];
+const Check = createLucideIcon("check", __iconNode$E);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
  */
-const __iconNode$B = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
-const ChevronUp = createLucideIcon("chevron-up", __iconNode$B);
+const __iconNode$D = [["path", { d: "m6 9 6 6 6-6", key: "qrunsl" }]];
+const ChevronDown = createLucideIcon("chevron-down", __iconNode$D);
+/**
+ * @license lucide-react v0.484.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$C = [["path", { d: "m18 15-6-6-6 6", key: "153udz" }]];
+const ChevronUp = createLucideIcon("chevron-up", __iconNode$C);
+/**
+ * @license lucide-react v0.484.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */
+const __iconNode$B = [
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
+  ["line", { x1: "21.17", x2: "12", y1: "8", y2: "8", key: "a0cw5f" }],
+  ["line", { x1: "3.95", x2: "8.54", y1: "6.06", y2: "14", key: "1kftof" }],
+  ["line", { x1: "10.88", x2: "15.46", y1: "21.94", y2: "14", key: "1ymyh8" }]
+];
+const Chrome = createLucideIcon("chrome", __iconNode$B);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
@@ -18528,12 +18555,10 @@ const ChevronUp = createLucideIcon("chevron-up", __iconNode$B);
  */
 const __iconNode$A = [
   ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
-  ["line", { x1: "21.17", x2: "12", y1: "8", y2: "8", key: "a0cw5f" }],
-  ["line", { x1: "3.95", x2: "8.54", y1: "6.06", y2: "14", key: "1kftof" }],
-  ["line", { x1: "10.88", x2: "15.46", y1: "21.94", y2: "14", key: "1ymyh8" }]
+  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
+  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
 ];
-const Chrome = createLucideIcon("chrome", __iconNode$A);
+const CircleAlert = createLucideIcon("circle-alert", __iconNode$A);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
@@ -18541,11 +18566,10 @@ const Chrome = createLucideIcon("chrome", __iconNode$A);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$z = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["line", { x1: "12", x2: "12", y1: "8", y2: "12", key: "1pkeuh" }],
-  ["line", { x1: "12", x2: "12.01", y1: "16", y2: "16", key: "4dfq90" }]
+  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
+  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
 ];
-const CircleAlert = createLucideIcon("circle-alert", __iconNode$z);
+const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$z);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
@@ -18553,10 +18577,10 @@ const CircleAlert = createLucideIcon("circle-alert", __iconNode$z);
  * See the LICENSE file in the root directory of this source tree.
  */
 const __iconNode$y = [
-  ["path", { d: "M21.801 10A10 10 0 1 1 17 3.335", key: "yps3ct" }],
-  ["path", { d: "m9 11 3 3L22 4", key: "1pflzl" }]
+  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+  ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }]
 ];
-const CircleCheckBig = createLucideIcon("circle-check-big", __iconNode$y);
+const Clock = createLucideIcon("clock", __iconNode$y);
 /**
  * @license lucide-react v0.484.0 - ISC
  *
@@ -22557,24 +22581,51 @@ function getMockResponse(path, query, bodyStr) {
   const allDBCards = [
     {
       id: 101,
-      name: "Chase Sapphire Preferred",
+      name: "Chase Sapphire Preferred® Card",
       issuer: "Chase",
       type: "credit",
       network: "Visa",
-      annualFee: 9500,
+      annualFee: 95,
       baseCashbackRate: 1,
+      welcomeBonus: "60,000 bonus points after spending $4,000 in first 3 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://creditcards.chase.com/rewards-credit-cards/sapphire/preferred",
+      isPopular: true,
+      rating: 4.5,
+      reviewCount: 1876,
+      features: ["2x Points on Travel and Dining", "No Foreign Transaction Fees", "Transfer Partners", "Trip Cancellation Insurance"],
       standardCategories: { Dining: 3, Travel: 2, Streaming: 3, Groceries: 1 },
+      categories: [
+        { id: 1, category: "Dining", cashbackRate: 3, isRotating: false },
+        { id: 2, category: "Travel", cashbackRate: 2, isRotating: false },
+        { id: 3, category: "Streaming", cashbackRate: 3, isRotating: false },
+        { id: 4, category: "Groceries", cashbackRate: 1, isRotating: false },
+        { id: 5, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
       imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
     },
     {
       id: 102,
-      name: "American Express Gold Card",
+      name: "American Express® Gold Card",
       issuer: "American Express",
       type: "credit",
       network: "Amex",
-      annualFee: 25e3,
+      annualFee: 250,
       baseCashbackRate: 1,
+      welcomeBonus: "60,000 Membership Rewards points after spending $4,000 in first 6 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.americanexpress.com/us/credit-cards/card/gold/",
+      isPopular: true,
+      rating: 4.7,
+      reviewCount: 2314,
+      features: ["4x on Dining and U.S. Supermarkets", "3x on Flights Booked Directly", "No Foreign Transaction Fees"],
       standardCategories: { Groceries: 4, Dining: 4, Travel: 3 },
+      categories: [
+        { id: 6, category: "Groceries", cashbackRate: 4, isRotating: false },
+        { id: 7, category: "Dining", cashbackRate: 4, isRotating: false },
+        { id: 8, category: "Travel", cashbackRate: 3, isRotating: false },
+        { id: 9, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
       imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
     },
     {
@@ -22585,40 +22636,457 @@ function getMockResponse(path, query, bodyStr) {
       network: "Mastercard",
       annualFee: 0,
       baseCashbackRate: 1,
+      welcomeBonus: "$75 Daily Cash welcome bonus after first purchase within 30 days",
+      creditRange: "Fair to Good",
+      applyUrl: "https://www.apple.com/apple-card/",
+      isPopular: true,
+      rating: 4.4,
+      reviewCount: 1543,
+      features: ["3% Cash Back on Apple", "2% Cash Back on Apple Pay Transactions", "No Fees Whatsoever", "Soft Pull Application"],
       standardCategories: { Shopping: 2, Travel: 1 },
+      categories: [
+        { id: 10, category: "Shopping", cashbackRate: 2, isRotating: false },
+        { id: 11, category: "Travel", cashbackRate: 1, isRotating: false },
+        { id: 12, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
       imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
     },
     {
       id: 104,
-      name: "Amex Blue Cash Preferred",
+      name: "Amex Blue Cash Preferred®",
       issuer: "American Express",
       type: "credit",
       network: "Amex",
-      annualFee: 9500,
+      annualFee: 95,
       baseCashbackRate: 1,
+      welcomeBonus: "$250 statement credit after spending $3,000 in first 6 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.americanexpress.com/us/credit-cards/card/blue-cash-preferred/",
+      isPopular: false,
+      rating: 4.5,
+      reviewCount: 987,
+      features: ["6% Cash Back on U.S. Supermarkets (up to $6k)", "6% on Select U.S. Streaming", "3% on Transit & Gas Stations"],
       standardCategories: { Groceries: 6, Streaming: 6, Gas: 3 },
+      categories: [
+        { id: 13, category: "Groceries", cashbackRate: 6, isRotating: false },
+        { id: 14, category: "Streaming", cashbackRate: 6, isRotating: false },
+        { id: 15, category: "Gas", cashbackRate: 3, isRotating: false },
+        { id: 16, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
       imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
     },
     {
       id: 105,
-      name: "Citi Double Cash",
+      name: "Citi® Double Cash Card",
       issuer: "Citi",
       type: "credit",
       network: "Mastercard",
       annualFee: 0,
       baseCashbackRate: 2,
+      welcomeBonus: "$200 cash back after spending $1,500 in first 6 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.citi.com/credit-cards/citi-double-cash-credit-card",
+      isPopular: true,
+      rating: 4.6,
+      reviewCount: 1432,
+      features: ["Earn 1% when you buy, plus 1% as you pay", "No Annual Fee", "Intro 0% APR on Balance Transfers"],
       standardCategories: { Dining: 2, Groceries: 2, Shopping: 2, Gas: 2, Travel: 2, Streaming: 2 },
+      categories: [
+        { id: 17, category: "Dining", cashbackRate: 2, isRotating: false },
+        { id: 18, category: "Groceries", cashbackRate: 2, isRotating: false },
+        { id: 19, category: "Shopping", cashbackRate: 2, isRotating: false },
+        { id: 20, category: "Gas", cashbackRate: 2, isRotating: false },
+        { id: 21, category: "Travel", cashbackRate: 2, isRotating: false },
+        { id: 22, category: "Streaming", cashbackRate: 2, isRotating: false },
+        { id: 23, category: "All Purchases", cashbackRate: 2, isRotating: false }
+      ],
       imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
     },
     {
       id: 106,
-      name: "Capital One Venture X",
+      name: "Capital One Venture X Rewards Credit Card",
       issuer: "Capital One",
       type: "credit",
       network: "Visa",
-      annualFee: 39500,
+      annualFee: 395,
       baseCashbackRate: 2,
+      welcomeBonus: "75,000 miles after spending $4,000 in first 3 months",
+      creditRange: "Excellent",
+      applyUrl: "https://www.capitalone.com/credit-cards/venture-x/",
+      isPopular: true,
+      rating: 4.8,
+      reviewCount: 2043,
+      features: ["10x Miles on Hotels & Rental Cars via Portal", "5x Miles on Flights via Portal", "Free Lounge Access", "$300 Portal Credit"],
       standardCategories: { Travel: 5, Dining: 2, Groceries: 2, Shopping: 2 },
+      categories: [
+        { id: 24, category: "Travel", cashbackRate: 5, isRotating: false },
+        { id: 25, category: "Dining", cashbackRate: 2, isRotating: false },
+        { id: 26, category: "Groceries", cashbackRate: 2, isRotating: false },
+        { id: 27, category: "Shopping", cashbackRate: 2, isRotating: false },
+        { id: 28, category: "All Purchases", cashbackRate: 2, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 107,
+      name: "Chase Sapphire Reserve®",
+      issuer: "Chase",
+      type: "credit",
+      network: "Visa",
+      annualFee: 550,
+      baseCashbackRate: 1,
+      welcomeBonus: "60,000 bonus points after spending $4,000 in first 3 months",
+      creditRange: "Excellent",
+      applyUrl: "https://creditcards.chase.com/rewards-credit-cards/sapphire/reserve",
+      isPopular: false,
+      rating: 4.7,
+      reviewCount: 876,
+      features: ["3x Points on Travel and Dining", "$300 Annual Travel Credit", "Priority Pass Lounge Access", "1.5x Point Redemption in Portal"],
+      standardCategories: { Dining: 3, Travel: 3 },
+      categories: [
+        { id: 29, category: "Dining", cashbackRate: 3, isRotating: false },
+        { id: 30, category: "Travel", cashbackRate: 3, isRotating: false },
+        { id: 31, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 108,
+      name: "Chase Freedom Unlimited®",
+      issuer: "Chase",
+      type: "credit",
+      network: "Visa",
+      annualFee: 0,
+      baseCashbackRate: 1.5,
+      welcomeBonus: "Earn an extra 1.5% on everything up to $20,000 in first year",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://creditcards.chase.com/cash-back-credit-cards/freedom/unlimited",
+      isPopular: true,
+      rating: 4.5,
+      reviewCount: 1654,
+      features: ["3% Cash Back on Dining & Drugstores", "5% on Travel booked via Chase", "1.5% flat Cash Back on all other purchases"],
+      standardCategories: { Dining: 3, Travel: 5, Shopping: 1.5, Groceries: 1.5 },
+      categories: [
+        { id: 32, category: "Dining", cashbackRate: 3, isRotating: false },
+        { id: 33, category: "Travel", cashbackRate: 5, isRotating: false },
+        { id: 34, category: "Shopping", cashbackRate: 1.5, isRotating: false },
+        { id: 35, category: "Groceries", cashbackRate: 1.5, isRotating: false },
+        { id: 36, category: "All Purchases", cashbackRate: 1.5, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 109,
+      name: "Chase Freedom Flex®",
+      issuer: "Chase",
+      type: "credit",
+      network: "Visa",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "$200 bonus after spending $500 in first 3 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://creditcards.chase.com/cash-back-credit-cards/freedom/flex",
+      isPopular: false,
+      rating: 4.4,
+      reviewCount: 543,
+      features: ["5% Rotating Categories up to $1,500/quarter", "3% Cash Back on Dining & Drugstores", "No Annual Fee"],
+      standardCategories: { Dining: 3, Shopping: 1, Groceries: 1 },
+      categories: [
+        { id: 37, category: "Dining", cashbackRate: 3, isRotating: false },
+        { id: 38, category: "Shopping", cashbackRate: 1, isRotating: false },
+        { id: 39, category: "Groceries", cashbackRate: 1, isRotating: false },
+        { id: 40, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 110,
+      name: "The Platinum Card® from American Express",
+      issuer: "American Express",
+      type: "credit",
+      network: "Amex",
+      annualFee: 695,
+      baseCashbackRate: 1,
+      welcomeBonus: "80,000 Membership Rewards points after spending $8,000 in first 6 months",
+      creditRange: "Excellent",
+      applyUrl: "https://www.americanexpress.com/us/credit-cards/card/platinum/",
+      isPopular: true,
+      rating: 4.6,
+      reviewCount: 1876,
+      features: ["5x Points on Flights and Hotels booked directly", "$200 Fine Hotels & Resorts Credit", "Centurion Lounge & Priority Pass"],
+      standardCategories: { Travel: 5, Dining: 1 },
+      categories: [
+        { id: 41, category: "Travel", cashbackRate: 5, isRotating: false },
+        { id: 42, category: "Dining", cashbackRate: 1, isRotating: false },
+        { id: 43, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 111,
+      name: "Capital One Savor Cash Rewards Credit Card",
+      issuer: "Capital One",
+      type: "credit",
+      network: "Mastercard",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "$200 cash bonus after spending $500 in first 3 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.capitalone.com/credit-cards/savor-dining-rewards/",
+      isPopular: false,
+      rating: 4.4,
+      reviewCount: 654,
+      features: ["3% Cash Back on Dining & Grocery Stores", "3% Cash Back on Popular Streaming", "8% Cash Back on Capital One Entertainment"],
+      standardCategories: { Dining: 3, Groceries: 3, Streaming: 3 },
+      categories: [
+        { id: 44, category: "Dining", cashbackRate: 3, isRotating: false },
+        { id: 45, category: "Groceries", cashbackRate: 3, isRotating: false },
+        { id: 46, category: "Streaming", cashbackRate: 3, isRotating: false },
+        { id: 47, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 112,
+      name: "Capital One Venture Rewards Credit Card",
+      issuer: "Capital One",
+      type: "credit",
+      network: "Visa",
+      annualFee: 95,
+      baseCashbackRate: 2,
+      welcomeBonus: "75,000 miles after spending $4,000 in first 3 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.capitalone.com/credit-cards/venture/",
+      isPopular: false,
+      rating: 4.3,
+      reviewCount: 1543,
+      features: ["Earn unlimited 2x miles on every purchase", "No Foreign Transaction Fees", "Two Free Lounge visits per year"],
+      standardCategories: { Travel: 2 },
+      categories: [
+        { id: 48, category: "Travel", cashbackRate: 2, isRotating: false },
+        { id: 49, category: "All Purchases", cashbackRate: 2, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 113,
+      name: "Citi Custom Cash® Card",
+      issuer: "Citi",
+      type: "credit",
+      network: "Mastercard",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "$200 cash back after spending $1,500 in first 6 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.citi.com/credit-cards/citi-custom-cash-credit-card",
+      isPopular: true,
+      rating: 4.5,
+      reviewCount: 1432,
+      features: ["5% Cash Back in your top spending category each cycle (up to $500)", "No Annual Fee", "Intro 0% APR on Purchases"],
+      standardCategories: { Dining: 5, Groceries: 5, Gas: 5, Travel: 5 },
+      categories: [
+        { id: 50, category: "Dining", cashbackRate: 5, isRotating: false },
+        { id: 51, category: "Groceries", cashbackRate: 5, isRotating: false },
+        { id: 52, category: "Gas", cashbackRate: 5, isRotating: false },
+        { id: 53, category: "Travel", cashbackRate: 5, isRotating: false },
+        { id: 54, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 114,
+      name: "Discover it® Cash Back",
+      issuer: "Discover",
+      type: "credit",
+      network: "Discover",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "Unlimited Cashback Match for your first year",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.discover.com/credit-cards/cash-back/",
+      isPopular: true,
+      rating: 4.5,
+      reviewCount: 987,
+      features: ["5% rotating categories up to $1,500/quarter", "Cashback Match (Discover matches all cash back at end of year 1)", "No Annual Fee"],
+      standardCategories: { Dining: 1, Groceries: 1, Shopping: 1 },
+      categories: [
+        { id: 55, category: "Dining", cashbackRate: 1, isRotating: false },
+        { id: 56, category: "Groceries", cashbackRate: 1, isRotating: false },
+        { id: 57, category: "Shopping", cashbackRate: 1, isRotating: false },
+        { id: 58, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 115,
+      name: "Discover it® Chrome",
+      issuer: "Discover",
+      type: "credit",
+      network: "Discover",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "Unlimited Cashback Match for your first year",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.discover.com/credit-cards/chrome/",
+      isPopular: false,
+      rating: 4.2,
+      reviewCount: 876,
+      features: ["2% Cash Back at Gas Stations and Restaurants (up to $1,000)", "No Annual Fee", "Intro 0% APR on Purchases"],
+      standardCategories: { Gas: 2, Dining: 2 },
+      categories: [
+        { id: 59, category: "Gas", cashbackRate: 2, isRotating: false },
+        { id: 60, category: "Dining", cashbackRate: 2, isRotating: false },
+        { id: 61, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 116,
+      name: "Wells Fargo Autograph® Card",
+      issuer: "Wells Fargo",
+      type: "credit",
+      network: "Visa",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "20,000 bonus points after spending $1,000 in first 3 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://creditcards.wellsfargo.com/cards/autograph-credit-card",
+      isPopular: true,
+      rating: 4.4,
+      reviewCount: 1098,
+      features: ["3x Points on Restaurants, Travel, Transit, Gas", "3x Points on Streaming Services and Phone Plans", "Cell Phone Protection"],
+      standardCategories: { Dining: 3, Travel: 3, Gas: 3, Streaming: 3 },
+      categories: [
+        { id: 62, category: "Dining", cashbackRate: 3, isRotating: false },
+        { id: 63, category: "Travel", cashbackRate: 3, isRotating: false },
+        { id: 64, category: "Gas", cashbackRate: 3, isRotating: false },
+        { id: 65, category: "Streaming", cashbackRate: 3, isRotating: false },
+        { id: 66, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 117,
+      name: "Bank of America® Customized Cash Rewards",
+      issuer: "Bank of America",
+      type: "credit",
+      network: "Visa",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "$200 online cash rewards bonus after spending $1,000 in first 90 days",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.bankofamerica.com/credit-cards/products/customized-cash-rewards-credit-card/",
+      isPopular: true,
+      rating: 4.3,
+      reviewCount: 987,
+      features: ["3% Cash Back in choice category (Dining, Travel, Shopping, Gas)", "2% Cash Back at Grocery Stores and Wholesale Clubs", "No Annual Fee"],
+      standardCategories: { Dining: 3, Groceries: 2, Shopping: 3, Gas: 3 },
+      categories: [
+        { id: 67, category: "Dining", cashbackRate: 3, isRotating: false },
+        { id: 68, category: "Groceries", cashbackRate: 2, isRotating: false },
+        { id: 69, category: "Shopping", cashbackRate: 3, isRotating: false },
+        { id: 70, category: "Gas", cashbackRate: 3, isRotating: false },
+        { id: 71, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 118,
+      name: "U.S. Bank Altitude® Go Visa Signature® Card",
+      issuer: "US Bank",
+      type: "credit",
+      network: "Visa",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "20,000 bonus points after spending $1,000 in first 90 days",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.usbank.com/credit-cards/altitude-go-visa-signature-credit-card.html",
+      isPopular: false,
+      rating: 4,
+      reviewCount: 321,
+      features: ["4x Points on Dining, Takeout, and Delivery", "2x Points on Grocery Stores, Gas, and Streaming", "No Annual Fee"],
+      standardCategories: { Dining: 4, Groceries: 2, Gas: 2, Streaming: 2 },
+      categories: [
+        { id: 72, category: "Dining", cashbackRate: 4, isRotating: false },
+        { id: 73, category: "Groceries", cashbackRate: 2, isRotating: false },
+        { id: 74, category: "Gas", cashbackRate: 2, isRotating: false },
+        { id: 75, category: "Streaming", cashbackRate: 2, isRotating: false },
+        { id: 76, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 119,
+      name: "Amex Blue Cash Everyday® Card",
+      issuer: "American Express",
+      type: "credit",
+      network: "Amex",
+      annualFee: 0,
+      baseCashbackRate: 1,
+      welcomeBonus: "$200 statement credit after spending $2,000 in first 6 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.americanexpress.com/us/credit-cards/card/blue-cash-everyday/",
+      isPopular: false,
+      rating: 4.3,
+      reviewCount: 654,
+      features: ["3% Cash Back on U.S. Supermarkets (up to $6k)", "3% on U.S. Online Retail Purchases", "3% on Gas Stations"],
+      standardCategories: { Groceries: 3, Shopping: 3, Gas: 3 },
+      categories: [
+        { id: 77, category: "Groceries", cashbackRate: 3, isRotating: false },
+        { id: 78, category: "Shopping", cashbackRate: 3, isRotating: false },
+        { id: 79, category: "Gas", cashbackRate: 3, isRotating: false },
+        { id: 80, category: "All Purchases", cashbackRate: 1, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 120,
+      name: "Wells Fargo Active Cash® Card",
+      issuer: "Wells Fargo",
+      type: "credit",
+      network: "Visa",
+      annualFee: 0,
+      baseCashbackRate: 2,
+      welcomeBonus: "$200 cash back rewards after spending $500 in first 3 months",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://creditcards.wellsfargo.com/cards/active-cash-credit-card",
+      isPopular: true,
+      rating: 4.6,
+      reviewCount: 1543,
+      features: ["Earn unlimited 2% cash rewards on purchases", "No Annual Fee", "Cell Phone Protection"],
+      standardCategories: { Dining: 2, Groceries: 2, Shopping: 2, Gas: 2 },
+      categories: [
+        { id: 81, category: "Dining", cashbackRate: 2, isRotating: false },
+        { id: 82, category: "Groceries", cashbackRate: 2, isRotating: false },
+        { id: 83, category: "Shopping", cashbackRate: 2, isRotating: false },
+        { id: 84, category: "Gas", cashbackRate: 2, isRotating: false },
+        { id: 85, category: "All Purchases", cashbackRate: 2, isRotating: false }
+      ],
+      imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
+    },
+    {
+      id: 121,
+      name: "Bank of America® Unlimited Cash Rewards",
+      issuer: "Bank of America",
+      type: "credit",
+      network: "Visa",
+      annualFee: 0,
+      baseCashbackRate: 1.5,
+      welcomeBonus: "$200 online cash rewards bonus after spending $1,000 in first 90 days",
+      creditRange: "Good to Excellent",
+      applyUrl: "https://www.bankofamerica.com/credit-cards/products/unlimited-cash-rewards-credit-card/",
+      isPopular: false,
+      rating: 4.2,
+      reviewCount: 543,
+      features: ["Earn unlimited 1.5% cash back on all purchases", "No Annual Fee", "Preferred Rewards bonus up to 75%"],
+      standardCategories: { Dining: 1.5, Groceries: 1.5, Shopping: 1.5, Gas: 1.5 },
+      categories: [
+        { id: 86, category: "Dining", cashbackRate: 1.5, isRotating: false },
+        { id: 87, category: "Groceries", cashbackRate: 1.5, isRotating: false },
+        { id: 88, category: "Shopping", cashbackRate: 1.5, isRotating: false },
+        { id: 89, category: "Gas", cashbackRate: 1.5, isRotating: false },
+        { id: 90, category: "All Purchases", cashbackRate: 1.5, isRotating: false }
+      ],
       imageUrl: "https://images.unsplash.com/photo-1589758438368-0ad531db3366?q=80&w=256&auto=format&fit=crop"
     }
   ];
@@ -22631,7 +23099,7 @@ function getMockResponse(path, query, bodyStr) {
         issuer: "Chase",
         type: "credit",
         network: "Visa",
-        annualFee: 9500,
+        annualFee: 95,
         baseCashbackRate: 1,
         standardCategories: { Dining: 3, Travel: 2, Streaming: 3, Groceries: 1 },
         isActive: true,
@@ -22645,7 +23113,7 @@ function getMockResponse(path, query, bodyStr) {
         issuer: "American Express",
         type: "credit",
         network: "Amex",
-        annualFee: 25e3,
+        annualFee: 250,
         baseCashbackRate: 1,
         standardCategories: { Groceries: 4, Dining: 4, Travel: 3 },
         isActive: true,
@@ -31882,9 +32350,9 @@ function SelectScrollDownButton({
 function Cards() {
   const [activeTab, setActiveTab] = reactExports.useState("comprehensive");
   const [searchQuery, setSearchQuery] = reactExports.useState("");
-  const [selectedIssuer, setSelectedIssuer] = reactExports.useState("");
-  const [selectedNetwork, setSelectedNetwork] = reactExports.useState("");
-  const [selectedCategory, setSelectedCategory] = reactExports.useState("");
+  const [selectedIssuer, setSelectedIssuer] = reactExports.useState("all");
+  const [selectedNetwork, setSelectedNetwork] = reactExports.useState("all");
+  const [selectedCategory, setSelectedCategory] = reactExports.useState("all");
   const [maxAnnualFee, setMaxAnnualFee] = reactExports.useState([500]);
   const [minCashback, setMinCashback] = reactExports.useState([0]);
   const [isAddDialogOpen, setIsAddDialogOpen] = reactExports.useState(false);
@@ -31898,9 +32366,9 @@ function Cards() {
     queryKey: ["comprehensive-cards", searchQuery, selectedIssuer, selectedNetwork, selectedCategory, maxAnnualFee[0], minCashback[0]],
     queryFn: () => backend.cards.getComprehensiveCards({
       query: searchQuery || void 0,
-      issuer: selectedIssuer || void 0,
-      network: selectedNetwork || void 0,
-      category: selectedCategory || void 0,
+      issuer: selectedIssuer === "all" || !selectedIssuer ? void 0 : selectedIssuer,
+      network: selectedNetwork === "all" || !selectedNetwork ? void 0 : selectedNetwork,
+      category: selectedCategory === "all" || !selectedCategory ? void 0 : selectedCategory,
       maxAnnualFee: maxAnnualFee[0],
       minCashback: minCashback[0],
       limit: 50
@@ -31909,6 +32377,11 @@ function Cards() {
   const { data: portfolioData, isLoading: isPortfolioLoading } = useQuery({
     queryKey: ["portfolio", user == null ? void 0 : user.userId],
     queryFn: () => user ? backend.cards.getUserPortfolio({ userId: user.userId }) : null,
+    enabled: !!user
+  });
+  const { data: offersData, isLoading: isOffersLoading } = useQuery({
+    queryKey: ["merchant-offers", user == null ? void 0 : user.userId],
+    queryFn: () => user ? backend.cards.getUserMerchantOffers({ userId: user.userId }) : null,
     enabled: !!user
   });
   const addCardMutation = useMutation({
@@ -31957,8 +32430,9 @@ function Cards() {
   const comprehensiveCards = (comprehensiveData == null ? void 0 : comprehensiveData.cards) || [];
   const popularCards = (comprehensiveData == null ? void 0 : comprehensiveData.popularCards) || [];
   const portfolioCards = (portfolioData == null ? void 0 : portfolioData.cards) || [];
-  const issuers = [...new Set(comprehensiveCards.map((card) => card.issuer))];
-  const networks = [...new Set(comprehensiveCards.map((card) => card.network))];
+  const merchantOffers = (offersData == null ? void 0 : offersData.offers) || [];
+  const issuers = [...new Set(comprehensiveCards.filter(Boolean).map((card) => card.issuer).filter(Boolean))];
+  const networks = [...new Set(comprehensiveCards.filter(Boolean).map((card) => card.network).filter(Boolean))];
   const categories = ["Groceries", "Gas", "Dining", "Travel", "Shopping", "Streaming", "All Purchases"];
   const handleAddCard = () => {
     if (!newCardName.trim()) {
@@ -31987,13 +32461,13 @@ function Cards() {
     addToPortfolioMutation.mutate({ cardId });
   };
   const isCardInPortfolio = (cardId) => {
-    return portfolioCards.some((pc) => pc.card.id === cardId);
+    return portfolioCards.some((pc) => pc && pc.card && pc.card.id === cardId);
   };
   const clearFilters = () => {
     setSearchQuery("");
-    setSelectedIssuer("");
-    setSelectedNetwork("");
-    setSelectedCategory("");
+    setSelectedIssuer("all");
+    setSelectedNetwork("all");
+    setSelectedCategory("all");
     setMaxAnnualFee([500]);
     setMinCashback([0]);
   };
@@ -32071,7 +32545,7 @@ function Cards() {
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Tabs, { value: activeTab, onValueChange: setActiveTab, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsList, { className: "grid w-full grid-cols-2", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsList, { className: "grid w-full grid-cols-3", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "comprehensive", className: "flex items-center space-x-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { className: "h-4 w-4" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "All Cards Database" })
@@ -32079,6 +32553,10 @@ function Cards() {
         /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "portfolio", className: "flex items-center space-x-2", disabled: !user, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Wallet, { className: "h-4 w-4" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "My Cards Portfolio" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "expiring", className: "flex items-center space-x-2", disabled: !user, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Reward Deadlines" })
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsContent, { value: "comprehensive", className: "space-y-6", children: [
@@ -32087,7 +32565,7 @@ function Cards() {
             /* @__PURE__ */ jsxRuntimeExports.jsx(Star, { className: "h-5 w-5 text-yellow-500" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-xl font-semibold text-gray-900", children: "Popular Cards" })
           ] }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: popularCards.slice(0, 6).map((card) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: popularCards.filter((card) => card && card.id).slice(0, 6).map((card) => /* @__PURE__ */ jsxRuntimeExports.jsx(
             ComprehensiveCardComponent,
             {
               card,
@@ -32126,7 +32604,7 @@ function Cards() {
               /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: selectedIssuer, onValueChange: setSelectedIssuer, children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Issuers" }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "", children: "All Issuers" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Issuers" }),
                   issuers.map((issuer) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: issuer, children: issuer }, issuer))
                 ] })
               ] })
@@ -32136,7 +32614,7 @@ function Cards() {
               /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: selectedNetwork, onValueChange: setSelectedNetwork, children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Networks" }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "", children: "All Networks" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Networks" }),
                   networks.map((network) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: network, children: network }, network))
                 ] })
               ] })
@@ -32146,7 +32624,7 @@ function Cards() {
               /* @__PURE__ */ jsxRuntimeExports.jsxs(Select, { value: selectedCategory, onValueChange: setSelectedCategory, children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx(SelectTrigger, { children: /* @__PURE__ */ jsxRuntimeExports.jsx(SelectValue, { placeholder: "All Categories" }) }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs(SelectContent, { children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "", children: "All Categories" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: "all", children: "All Categories" }),
                   categories.map((category) => /* @__PURE__ */ jsxRuntimeExports.jsx(SelectItem, { value: category, children: category }, category))
                 ] })
               ] })
@@ -32198,7 +32676,7 @@ function Cards() {
             (comprehensiveData == null ? void 0 : comprehensiveData.totalCount) || 0,
             ")"
           ] }) }),
-          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: comprehensiveCards.map((card) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+          /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: comprehensiveCards.filter((card) => card && card.id).map((card) => /* @__PURE__ */ jsxRuntimeExports.jsx(
             ComprehensiveCardComponent,
             {
               card,
@@ -32235,10 +32713,108 @@ function Cards() {
         /* @__PURE__ */ jsxRuntimeExports.jsx(User, { className: "h-12 w-12 text-gray-400 mx-auto mb-4" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-lg font-medium text-gray-900 mb-2", children: "Sign in to view your portfolio" }),
         /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-gray-600", children: "Create an account to track your credit cards and get personalized recommendations" })
-      ] }) })
+      ] }) }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsContent, { value: "expiring", className: "space-y-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-teal-500/10 via-emerald-500/5 to-transparent p-6 rounded-3xl border border-teal-500/15 space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-teal-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { className: "h-5 w-5" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-bold", children: "Reward Deadlines & Expiring Benefits" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 max-w-2xl", children: "Never let valuable credits expire. This panel aggregates static annual resetting benefits for cards in your wallet and dynamic merchant offers from your synced accounts." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-2 gap-6", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Wallet, { className: "h-5 w-5 text-gray-700" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-md font-bold text-gray-900", children: "Annual Statement Credits" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: portfolioCards.length > 0 ? (() => {
+              let hasCredits = false;
+              const rendered = portfolioCards.map((userCard) => {
+                const card = userCard == null ? void 0 : userCard.card;
+                if (!card) return null;
+                const credits = getAnnualCredits(card.id);
+                if (credits.length === 0) return null;
+                hasCredits = true;
+                return /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { className: "border border-slate-100/80 rounded-2xl p-4 bg-white hover:shadow-md transition-all", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-start justify-between", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] uppercase font-bold tracking-wider text-teal-600 block", children: card.name }),
+                  credits.map((cr, idx) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1 mt-2 pt-2 border-t border-slate-50 first:border-t-0 first:mt-0 first:pt-0", children: [
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-sm font-extrabold text-slate-800", children: cr.name }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-500 leading-normal", children: cr.description }),
+                    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-1 text-[10px] text-teal-600 font-bold bg-teal-50 px-2 py-0.5 rounded-md w-fit mt-1", children: [
+                      /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "h-3 w-3" }),
+                      /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { children: [
+                        "Resets: ",
+                        cr.resets
+                      ] })
+                    ] })
+                  ] }, idx))
+                ] }) }) }, userCard.id);
+              });
+              return hasCredits ? rendered : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 bg-slate-50 rounded-2xl border border-slate-100", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500", children: "Your portfolio cards do not have annual resetting credits recorded." }) });
+            })() : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 bg-slate-50 rounded-2xl border border-slate-100", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500", children: "Add cards to your portfolio to view their annual credits." }) }) })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-4", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "h-5 w-5 text-gray-700" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("h3", { className: "text-md font-bold text-gray-900", children: "Expiring Merchant Offers" })
+            ] }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: isOffersLoading ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: [...Array(3)].map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-24 bg-gray-100 animate-pulse rounded-2xl border border-gray-150" }, i)) }) : merchantOffers.length > 0 ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-3", children: merchantOffers.slice().sort((a, b) => {
+              return a.merchantName.localeCompare(b.merchantName);
+            }).map((offer) => {
+              const isUrgent = offer.offerDescription.toLowerCase().includes("10%") || offer.offerDescription.toLowerCase().includes("10");
+              return /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { className: "border border-slate-100/80 rounded-2xl p-4 bg-white hover:shadow-md transition-all", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-start justify-between", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1 flex-1", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-sm font-extrabold text-slate-800", children: offer.merchantName }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { className: isUrgent ? "bg-orange-100 text-orange-700 text-[10px] font-bold" : "bg-teal-100 text-teal-700 text-[10px] font-bold", children: isUrgent ? "Expiring Soon!" : "Active" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-600 leading-normal", children: offer.offerDescription }),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between pt-2 mt-2 border-t border-slate-50", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[10px] text-slate-400 font-semibold", children: [
+                    "Ends: ",
+                    new Date(offer.endDate).toLocaleDateString()
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100", children: "Simulated Sync" })
+                ] })
+              ] }) }) }, offer.offerId);
+            }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 bg-slate-50 rounded-2xl border border-slate-100", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500", children: "No active merchant offers synced. Sync your cards to pull targeted bank deals." }) }) })
+          ] })
+        ] })
+      ] })
     ] })
   ] });
 }
+const getAnnualCredits = (cardId) => {
+  switch (cardId) {
+    case 101:
+      return [
+        { name: "$50 Annual Hotel Credit", description: "Statement credit for hotel stays booked through Chase Travel.", resets: "December 31, 2026" }
+      ];
+    case 107:
+      return [
+        { name: "$300 Annual Travel Credit", description: "Automatic statement credit for travel purchases charged to your card.", resets: "December 31, 2026" }
+      ];
+    case 102:
+      return [
+        { name: "$120 Annual Dining Credit", description: "Earn up to $10/month in statement credits at Grubhub, Cheesecake Factory, etc.", resets: "Monthly (Dec 31, 2026)" },
+        { name: "$120 Uber Cash", description: "Earn $10/month in Uber Cash added to your Uber account for rides or Uber Eats.", resets: "Monthly (Dec 31, 2026)" }
+      ];
+    case 110:
+      return [
+        { name: "$200 Hotel Credit", description: "Statement credit for prepaid Fine Hotels + Resorts bookings via Amex Travel.", resets: "December 31, 2026" },
+        { name: "$200 Airline Fee Credit", description: "Statement credit for incidental airline fees charged to your card.", resets: "December 31, 2026" },
+        { name: "$200 Uber Cash", description: "$15/month in Uber Cash (plus a $20 bonus in December) for U.S. rides and eats.", resets: "Monthly (Dec 31, 2026)" },
+        { name: "$189 CLEAR® Plus Credit", description: "Statement credit for annual CLEAR Plus biometric security membership.", resets: "December 31, 2026" }
+      ];
+    case 106:
+      return [
+        { name: "$300 Annual Travel Credit", description: "Statement credit for travel bookings made through Capital One Travel.", resets: "December 31, 2026" },
+        { name: "10,000 Anniversary Miles", description: "Bonus miles awarded on every account anniversary worth $100 in travel.", resets: "Card Anniversary Date" }
+      ];
+    default:
+      return [];
+  }
+};
 function CreditCardRender({
   name,
   issuer,
@@ -32355,6 +32931,7 @@ function ComprehensiveCardComponent({
   isAddingToPortfolio,
   isPopular = false
 }) {
+  if (!card) return null;
   const bestCategory = card.categories && card.categories.length > 0 ? card.categories.reduce(
     (best, current) => current.cashbackRate > best.cashbackRate ? current : best
   ) : { cashbackRate: 0, category: "N/A", isRotating: false };
@@ -32477,7 +33054,8 @@ function ComprehensiveCardComponent({
   ] });
 }
 function PortfolioCardComponent({ userCard }) {
-  const { card } = userCard;
+  const card = userCard == null ? void 0 : userCard.card;
+  if (!card) return null;
   const bestCategory = card.categories && card.categories.length > 0 ? card.categories.reduce(
     (best, current) => current.cashbackRate > best.cashbackRate ? current : best
   ) : { cashbackRate: 0, category: "N/A" };
@@ -33110,7 +33688,7 @@ function RecommendationCard({
           ] })
         ] })
       ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-wrap gap-1", children: card.categories.slice(0, 4).map((cat, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { variant: "outline", className: "text-xs", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex flex-wrap gap-1", children: card.categories && card.categories.slice(0, 4).map((cat, index2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(Badge, { variant: "outline", className: "text-xs", children: [
         cat.cashbackRate,
         "% ",
         cat.category

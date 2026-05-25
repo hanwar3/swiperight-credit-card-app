@@ -22,9 +22,9 @@ export default function Cards() {
   
   // Comprehensive cards filters
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedIssuer, setSelectedIssuer] = useState<string>('');
-  const [selectedNetwork, setSelectedNetwork] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedIssuer, setSelectedIssuer] = useState<string>('all');
+  const [selectedNetwork, setSelectedNetwork] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [maxAnnualFee, setMaxAnnualFee] = useState<number[]>([500]);
   const [minCashback, setMinCashback] = useState<number[]>([0]);
   
@@ -43,9 +43,9 @@ export default function Cards() {
     queryKey: ['comprehensive-cards', searchQuery, selectedIssuer, selectedNetwork, selectedCategory, maxAnnualFee[0], minCashback[0]],
     queryFn: () => backend.cards.getComprehensiveCards({
       query: searchQuery || undefined,
-      issuer: selectedIssuer || undefined,
-      network: selectedNetwork || undefined,
-      category: selectedCategory || undefined,
+      issuer: selectedIssuer === 'all' || !selectedIssuer ? undefined : selectedIssuer,
+      network: selectedNetwork === 'all' || !selectedNetwork ? undefined : selectedNetwork,
+      category: selectedCategory === 'all' || !selectedCategory ? undefined : selectedCategory,
       maxAnnualFee: maxAnnualFee[0],
       minCashback: minCashback[0],
       limit: 50
@@ -160,9 +160,9 @@ export default function Cards() {
 
   const clearFilters = () => {
     setSearchQuery('');
-    setSelectedIssuer('');
-    setSelectedNetwork('');
-    setSelectedCategory('');
+    setSelectedIssuer('all');
+    setSelectedNetwork('all');
+    setSelectedCategory('all');
     setMaxAnnualFee([500]);
     setMinCashback([0]);
   };
@@ -308,7 +308,7 @@ export default function Cards() {
                     <SelectValue placeholder="All Issuers" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Issuers</SelectItem>
+                    <SelectItem value="all">All Issuers</SelectItem>
                     {issuers.map(issuer => (
                       <SelectItem key={issuer} value={issuer}>{issuer}</SelectItem>
                     ))}
@@ -324,7 +324,7 @@ export default function Cards() {
                     <SelectValue placeholder="All Networks" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Networks</SelectItem>
+                    <SelectItem value="all">All Networks</SelectItem>
                     {networks.map(network => (
                       <SelectItem key={network} value={network}>{network}</SelectItem>
                     ))}
@@ -340,7 +340,7 @@ export default function Cards() {
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
                     {categories.map(category => (
                       <SelectItem key={category} value={category}>{category}</SelectItem>
                     ))}

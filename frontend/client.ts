@@ -1445,13 +1445,22 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
         }
     ];
 
-    // 2. Card Portfolio
-    if (path.startsWith("/cards/portfolio")) {
-        const mockCards = [
+    // Stored Portfolio Helpers
+    const getStoredPortfolio = () => {
+        if (!BROWSER) return [];
+        const stored = localStorage.getItem('swiperight_portfolio_cards');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        const initial = [
             {
                 portfolioId: 1,
                 cardId: 101,
-                name: "Chase Sapphire Preferred",
+                name: "Chase Sapphire Preferred® Card",
                 issuer: "Chase",
                 type: "credit",
                 network: "Visa",
@@ -1460,12 +1469,13 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
                 standardCategories: { Dining: 3.0, Travel: 2.0, Streaming: 3.0, Groceries: 1.0 },
                 isActive: true,
                 nickname: "Travel & Dining Card",
-                card: allDBCards[0]
+                card: allDBCards[0],
+                addedAt: new Date().toISOString()
             },
             {
                 portfolioId: 2,
                 cardId: 102,
-                name: "American Express Gold Card",
+                name: "American Express® Gold Card",
                 issuer: "American Express",
                 type: "credit",
                 network: "Amex",
@@ -1474,7 +1484,8 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
                 standardCategories: { Groceries: 4.0, Dining: 4.0, Travel: 3.0 },
                 isActive: true,
                 nickname: "Foodie Gold Card",
-                card: allDBCards[1]
+                card: allDBCards[1],
+                addedAt: new Date().toISOString()
             },
             {
                 portfolioId: 3,
@@ -1488,19 +1499,35 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
                 standardCategories: { Shopping: 2.0, Travel: 1.0 },
                 isActive: true,
                 nickname: "Daily Apple Pay",
-                card: allDBCards[2]
+                card: allDBCards[2],
+                addedAt: new Date().toISOString()
             }
         ];
-        return jsonRes({ cards: mockCards });
-    }
+        localStorage.setItem('swiperight_portfolio_cards', JSON.stringify(initial));
+        return initial;
+    };
 
-    // 3. Merchant Offers
-    if (path.startsWith("/cards/merchant-offers")) {
-        const mockOffers = [
+    const saveStoredPortfolio = (cards: any[]) => {
+        if (!BROWSER) return;
+        localStorage.setItem('swiperight_portfolio_cards', JSON.stringify(cards));
+    };
+
+    // Stored Offers Helpers
+    const getStoredOffers = () => {
+        if (!BROWSER) return [];
+        const stored = localStorage.getItem('swiperight_merchant_offers');
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        const initial = [
             {
                 offerId: 1,
                 cardId: 101,
-                cardName: "Chase Sapphire Preferred",
+                cardName: "Chase Sapphire Preferred® Card",
                 merchantName: "Amazon Fresh",
                 offerDescription: "10% back on groceries at Amazon Fresh",
                 cashbackRate: 10.0,
@@ -1512,7 +1539,7 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
             {
                 offerId: 2,
                 cardId: 102,
-                cardName: "American Express Gold Card",
+                cardName: "American Express® Gold Card",
                 merchantName: "Food Lion",
                 offerDescription: "7% back on groceries at Food Lion",
                 cashbackRate: 7.0,
@@ -1524,7 +1551,7 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
             {
                 offerId: 3,
                 cardId: 101,
-                cardName: "Chase Sapphire Preferred",
+                cardName: "Chase Sapphire Preferred® Card",
                 merchantName: "Nike",
                 offerDescription: "Spend $150 get $25 statement credit back",
                 cashbackAmount: 2500,
@@ -1537,7 +1564,7 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
             {
                 offerId: 4,
                 cardId: 102,
-                cardName: "American Express Gold Card",
+                cardName: "American Express® Gold Card",
                 merchantName: "Rayban",
                 offerDescription: "Spend $50 get $25 back on Rayban Glasses",
                 cashbackAmount: 2500,
@@ -1560,7 +1587,155 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
                 isUsed: false
             }
         ];
-        return jsonRes({ offers: mockOffers });
+        localStorage.setItem('swiperight_merchant_offers', JSON.stringify(initial));
+        return initial;
+    };
+
+    const saveStoredOffers = (offers: any[]) => {
+        if (!BROWSER) return;
+        localStorage.setItem('swiperight_merchant_offers', JSON.stringify(offers));
+    };
+
+    // 2. Card Portfolio
+    if (path.startsWith("/cards/portfolio")) {
+        if (path.endsWith("/add")) {
+            const body = JSON.parse(bodyStr || "{}");
+            const cardId = body.cardId;
+            const nickname = body.nickname;
+            const dbCard = allDBCards.find(c => c.id === cardId);
+            if (dbCard) {
+                const portfolio = getStoredPortfolio();
+                const newId = portfolio.length > 0 ? Math.max(...portfolio.map((p: any) => p.portfolioId)) + 1 : 1;
+                const newPC = {
+                    portfolioId: newId,
+                    cardId: cardId,
+                    name: dbCard.name,
+                    issuer: dbCard.issuer,
+                    type: dbCard.type,
+                    network: dbCard.network,
+                    annualFee: dbCard.annualFee,
+                    baseCashbackRate: dbCard.baseCashbackRate,
+                    standardCategories: dbCard.standardCategories || {},
+                    isActive: true,
+                    nickname: nickname || dbCard.name,
+                    card: dbCard,
+                    addedAt: new Date().toISOString()
+                };
+                portfolio.push(newPC);
+                saveStoredPortfolio(portfolio);
+
+                // Add a simulated offer for this card as well!
+                const offers = getStoredOffers();
+                const newOfferId = offers.length > 0 ? Math.max(...offers.map((o: any) => o.offerId)) + 1 : 1;
+                
+                let merchantName = "Target";
+                let offerDescription = "5% back on Target.com purchases";
+                let cashbackRate = 5.0;
+                
+                if (dbCard.issuer.toLowerCase().includes("capital one")) {
+                    merchantName = "Airbnb";
+                    offerDescription = "Get 8% cash back on Airbnb experiences";
+                    cashbackRate = 8.0;
+                } else if (dbCard.issuer.toLowerCase().includes("citi")) {
+                    merchantName = "Starbucks";
+                    offerDescription = "10% back on your next Starbucks run";
+                    cashbackRate = 10.0;
+                } else if (dbCard.issuer.toLowerCase().includes("chase")) {
+                    merchantName = "DoorDash";
+                    offerDescription = "Spend $25 get $5 back on delivery";
+                    cashbackRate = 20.0;
+                }
+                
+                offers.push({
+                    offerId: newOfferId,
+                    cardId: cardId,
+                    cardName: dbCard.name,
+                    merchantName: merchantName,
+                    offerDescription: offerDescription,
+                    cashbackRate: cashbackRate,
+                    offerType: "cashback",
+                    endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+                    isActivated: true,
+                    isUsed: false
+                });
+                saveStoredOffers(offers);
+            }
+            return jsonRes({ success: true });
+        }
+
+        const segments = path.split("/");
+        if (segments.length === 5 && !path.endsWith("/add") && !path.endsWith("/update")) {
+            const pId = parseInt(segments[4]);
+            if (!isNaN(pId)) {
+                let portfolio = getStoredPortfolio();
+                portfolio = portfolio.filter((p: any) => p.portfolioId !== pId);
+                saveStoredPortfolio(portfolio);
+            }
+            return jsonRes({ success: true });
+        }
+
+        if (path.endsWith("/update")) {
+            const body = JSON.parse(bodyStr || "{}");
+            const { portfolioId, nickname, creditLimit } = body;
+            const portfolio = getStoredPortfolio();
+            const pc = portfolio.find((p: any) => p.portfolioId === portfolioId);
+            if (pc) {
+                if (nickname !== undefined) pc.nickname = nickname;
+                if (creditLimit !== undefined) pc.creditLimit = creditLimit;
+                saveStoredPortfolio(portfolio);
+            }
+            return jsonRes({ success: true });
+        }
+
+        return jsonRes({ cards: getStoredPortfolio() });
+    }
+
+    // 3. Merchant Offers
+    if (path.startsWith("/cards/merchant-offers")) {
+        if (path.endsWith("/activate")) {
+            const segments = path.split("/");
+            const oId = parseInt(segments[4]);
+            if (!isNaN(oId)) {
+                const offers = getStoredOffers();
+                const offer = offers.find((o: any) => o.offerId === oId);
+                if (offer) {
+                    offer.isActivated = true;
+                    saveStoredOffers(offers);
+                }
+            }
+            return jsonRes({ success: true });
+        }
+
+        if (path.endsWith("/use")) {
+            const segments = path.split("/");
+            const oId = parseInt(segments[4]);
+            if (!isNaN(oId)) {
+                const offers = getStoredOffers();
+                const offer = offers.find((o: any) => o.offerId === oId);
+                if (offer) {
+                    offer.isUsed = true;
+                    saveStoredOffers(offers);
+                }
+            }
+            return jsonRes({ success: true });
+        }
+
+        if (path.endsWith("/sync")) {
+            return jsonRes({ synced: 0, updated: 0 });
+        }
+
+        if (path.includes("/category/")) {
+            const segments = path.split("/");
+            const category = decodeURIComponent(segments[segments.length - 1]).toLowerCase();
+            const offers = getStoredOffers().filter((o: any) => !o.isUsed);
+            const relevant = offers.filter((o: any) => 
+                o.merchantName.toLowerCase().includes(category) || 
+                o.offerDescription.toLowerCase().includes(category)
+            );
+            return jsonRes({ offers: relevant });
+        }
+
+        return jsonRes({ offers: getStoredOffers().filter((o: any) => !o.isUsed) });
     }
 
     // 4. Database list/search

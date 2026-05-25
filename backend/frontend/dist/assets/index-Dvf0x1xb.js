@@ -32886,20 +32886,6 @@ function CreditCardRender({
         return /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-bold text-white/60 uppercase", children: network });
     }
   };
-  if (imageUrl && !imageError) {
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "relative w-full aspect-[1.586/1] rounded-2xl overflow-hidden shadow-lg border border-gray-100 transition-all duration-300", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx(
-        "img",
-        {
-          src: imageUrl,
-          alt: name,
-          className: "w-full h-full object-cover",
-          onError: () => setImageError(true)
-        }
-      ),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none" })
-    ] });
-  }
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `relative w-full aspect-[1.586/1] rounded-2xl p-5 flex flex-col justify-between overflow-hidden bg-gradient-to-br transition-all duration-500 shadow-xl ${getCardStyle()}`, children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/12 pointer-events-none" }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-start z-10", children: [
@@ -33587,6 +33573,46 @@ function Recommendations() {
     ] })
   ] });
 }
+function MiniCreditCardRender({ name, issuer }) {
+  const normalizedIssuer = issuer.toLowerCase();
+  const normalizedName = name.toLowerCase();
+  const getCardStyle = () => {
+    if (normalizedIssuer.includes("chase")) {
+      if (normalizedName.includes("reserve")) return "from-slate-900 via-indigo-950 to-slate-900 text-white";
+      if (normalizedName.includes("preferred")) return "from-indigo-900 to-blue-900 text-white";
+      return "from-blue-600 to-indigo-800 text-white";
+    }
+    if (normalizedIssuer.includes("american express") || normalizedIssuer.includes("amex")) {
+      if (normalizedName.includes("platinum")) return "from-slate-350 via-zinc-150 to-slate-400 text-slate-800";
+      if (normalizedName.includes("gold")) return "from-amber-200 via-amber-450 to-yellow-600 text-amber-950";
+      if (normalizedName.includes("blue cash")) return "from-sky-850 to-blue-950 text-white";
+      return "from-amber-400 to-yellow-600 text-amber-950";
+    }
+    if (normalizedIssuer.includes("capital one")) {
+      if (normalizedName.includes("venture")) return "from-slate-800 to-slate-950 text-white";
+      if (normalizedName.includes("savor")) return "from-amber-900 to-amber-950 text-amber-100";
+      return "from-slate-700 to-slate-900 text-white";
+    }
+    if (normalizedIssuer.includes("citi")) {
+      return "from-cyan-500 via-blue-600 to-blue-800 text-white";
+    }
+    if (normalizedIssuer.includes("discover")) {
+      return "from-orange-500 to-red-500 text-white";
+    }
+    if (normalizedIssuer.includes("apple")) {
+      return "from-zinc-50 via-zinc-100 to-zinc-200 text-slate-800 border border-zinc-200";
+    }
+    return "from-teal-600 to-emerald-800 text-white";
+  };
+  return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `w-16 h-10 rounded-lg p-1.5 flex flex-col justify-between overflow-hidden bg-gradient-to-br text-[7px] font-black uppercase tracking-tighter leading-none shadow-sm ${getCardStyle()}`, children: [
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-70 text-[5px] block truncate", children: issuer }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "block truncate font-bold text-[6px] leading-tight mt-0.5", children: name.split(" ").pop() }),
+    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-end mt-1", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-60 font-mono text-[4px]", children: "••••" }),
+      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 bg-yellow-400/80 rounded-sm" })
+    ] })
+  ] });
+}
 function RecommendationCard({
   recommendation,
   rank,
@@ -33611,19 +33637,7 @@ function RecommendationCard({
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Card, { className: `transition-all duration-300 border-0 ${isTopChoice && !isPortfolioCard ? "bg-gradient-to-r from-teal-50 to-green-50 ring-2 ring-teal-200" : isPortfolioCard ? "bg-gradient-to-r from-blue-50 to-indigo-50 ring-2 ring-blue-200" : "bg-white hover:shadow-md"}`, children: /* @__PURE__ */ jsxRuntimeExports.jsx(CardContent, { className: "p-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start space-x-4", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: `flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isTopChoice && !isPortfolioCard ? "bg-gradient-to-r from-teal-500 to-green-500 text-white" : isPortfolioCard ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white" : "bg-gray-100 text-gray-600"}`, children: rank }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-16 h-10 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg flex items-center justify-center overflow-hidden", children: /* @__PURE__ */ jsxRuntimeExports.jsx(
-      "img",
-      {
-        src: card.imageUrl,
-        alt: card.name,
-        className: "w-full h-full object-cover",
-        onError: (e) => {
-          const target = e.target;
-          target.style.display = "none";
-          target.parentElement.innerHTML = `<span class="text-xs font-medium text-gray-500">${card.issuer}</span>`;
-        }
-      }
-    ) }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx(MiniCreditCardRender, { name: card.name, issuer: card.issuer }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1 space-y-3", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [

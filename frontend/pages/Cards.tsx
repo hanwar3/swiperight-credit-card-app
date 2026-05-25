@@ -704,22 +704,7 @@ function CreditCardRender({
     }
   };
 
-  if (imageUrl && !imageError) {
-    return (
-      <div className="relative w-full aspect-[1.586/1] rounded-2xl overflow-hidden shadow-lg border border-gray-100 transition-all duration-300">
-        <img 
-          src={imageUrl} 
-          alt={name}
-          className="w-full h-full object-cover"
-          onError={() => setImageError(true)}
-        />
-        {/* Apple HIG soft glare layer */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none" />
-      </div>
-    );
-  }
-
-  // Premium CSS fallback
+  // Premium CSS layout (always used to keep themed HSL designs and avoid slow/broken hotlink block raw images)
   return (
     <div className={`relative w-full aspect-[1.586/1] rounded-2xl p-5 flex flex-col justify-between overflow-hidden bg-gradient-to-br transition-all duration-500 shadow-xl ${getCardStyle()}`}>
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/12 pointer-events-none" />

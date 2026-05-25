@@ -23354,6 +23354,8 @@ function getMockResponse(path, query, bodyStr) {
     const mockOffers = [
       {
         offerId: 1,
+        cardId: 101,
+        cardName: "Chase Sapphire Preferred",
         merchantName: "Amazon Fresh",
         offerDescription: "10% back on groceries at Amazon Fresh",
         cashbackRate: 10,
@@ -23364,6 +23366,8 @@ function getMockResponse(path, query, bodyStr) {
       },
       {
         offerId: 2,
+        cardId: 102,
+        cardName: "American Express Gold Card",
         merchantName: "Food Lion",
         offerDescription: "7% back on groceries at Food Lion",
         cashbackRate: 7,
@@ -23374,6 +23378,8 @@ function getMockResponse(path, query, bodyStr) {
       },
       {
         offerId: 3,
+        cardId: 101,
+        cardName: "Chase Sapphire Preferred",
         merchantName: "Nike",
         offerDescription: "Spend $150 get $25 statement credit back",
         cashbackAmount: 2500,
@@ -23385,6 +23391,8 @@ function getMockResponse(path, query, bodyStr) {
       },
       {
         offerId: 4,
+        cardId: 102,
+        cardName: "American Express Gold Card",
         merchantName: "Rayban",
         offerDescription: "Spend $50 get $25 back on Rayban Glasses",
         cashbackAmount: 2500,
@@ -23396,6 +23404,8 @@ function getMockResponse(path, query, bodyStr) {
       },
       {
         offerId: 5,
+        cardId: 103,
+        cardName: "Apple Card",
         merchantName: "Uber",
         offerDescription: "5% back on rides and Uber Eats",
         cashbackRate: 5,
@@ -32758,7 +32768,7 @@ function Cards() {
       ] })
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs(Tabs, { value: activeTab, onValueChange: setActiveTab, children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsList, { className: "grid w-full grid-cols-3", children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsList, { className: "grid w-full grid-cols-4", children: [
         /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "comprehensive", className: "flex items-center space-x-2", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(CreditCard, { className: "h-4 w-4" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "All Cards Database" })
@@ -32770,6 +32780,10 @@ function Cards() {
         /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "expiring", className: "flex items-center space-x-2", disabled: !user, children: [
           /* @__PURE__ */ jsxRuntimeExports.jsx(Calendar, { className: "h-4 w-4" }),
           /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "Reward Deadlines" })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsTrigger, { value: "portfolio-offers", className: "flex items-center space-x-2", disabled: !user, children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("span", { children: "My Expiring Offers" })
         ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsContent, { value: "comprehensive", className: "space-y-6", children: [
@@ -32993,6 +33007,58 @@ function Cards() {
             }) }) : /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "text-center py-8 bg-slate-50 rounded-2xl border border-slate-100", children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500", children: "No active merchant offers synced. Sync your cards to pull targeted bank deals." }) }) })
           ] })
         ] })
+      ] }),
+      /* @__PURE__ */ jsxRuntimeExports.jsxs(TabsContent, { value: "portfolio-offers", className: "space-y-6", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "bg-gradient-to-r from-orange-500/10 via-red-500/5 to-transparent p-6 rounded-3xl border border-orange-500/15 space-y-2", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center space-x-2 text-orange-700", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx(Clock, { className: "h-5 w-5" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { className: "text-lg font-bold", children: "My Portfolio's Expiring Merchant Offers" })
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-600 max-w-2xl", children: "These are targeted custom merchant deals that are active and expiring **strictly on the credit cards in your wallet portfolio**." })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "space-y-4", children: (() => {
+          const portfolioCardIds = portfolioCards.map((pc) => pc && pc.card ? pc.card.id : 0).filter(Boolean);
+          const targetedOffers = merchantOffers.filter(
+            (offer) => offer && offer.cardId && portfolioCardIds.includes(offer.cardId)
+          );
+          if (isOffersLoading) {
+            return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [...Array(2)].map((_, i) => /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "h-28 bg-gray-150 animate-pulse rounded-2xl border border-slate-100" }, i)) });
+          }
+          if (targetedOffers.length === 0) {
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border border-dashed border-slate-200 rounded-3xl p-8 text-center bg-slate-50/50", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-gray-500 font-medium", children: "No expiring merchant offers found for the cards currently in your portfolio wallet." }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-slate-400 mt-1", children: [
+                "Make sure you have added cards like ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Chase Sapphire Preferred" }),
+                ", ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "American Express Gold Card" }),
+                ", or ",
+                /* @__PURE__ */ jsxRuntimeExports.jsx("b", { children: "Apple Card" }),
+                " to see synced, active merchant deals."
+              ] })
+            ] });
+          }
+          return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6", children: targetedOffers.map((offer) => {
+            const isUrgent = offer.offerDescription.toLowerCase().includes("10%") || offer.offerDescription.toLowerCase().includes("10") || offer.offerDescription.toLowerCase().includes("$25");
+            return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border border-slate-150 rounded-2xl p-5 bg-gradient-to-br from-white to-slate-50/20 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 shadow-sm", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-1", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-xs uppercase font-extrabold tracking-wider text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100", children: offer.cardName }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { className: isUrgent ? "bg-red-150 text-red-700 text-[10px] font-bold" : "bg-teal-100 text-teal-700 text-[10px] font-bold", children: isUrgent ? "Expiring Soon!" : "Active" })
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h4", { className: "text-sm font-black text-slate-800 pt-1", children: offer.merchantName }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-xs text-slate-600 leading-relaxed font-medium", children: offer.offerDescription })
+              ] }),
+              /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between pt-2 border-t border-slate-100/60 text-[10px] font-bold", children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-red-600 font-extrabold bg-red-50/60 px-2 py-0.5 rounded-full border border-red-100", children: [
+                  "Ends: ",
+                  new Date(offer.endDate).toLocaleDateString()
+                ] }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100", children: "Synced Wallet Promo" })
+              ] })
+            ] }, offer.offerId);
+          }) });
+        })() })
       ] })
     ] })
   ] });
@@ -33113,19 +33179,22 @@ function CreditCardRender({
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute left-0 right-0 top-3 h-px bg-yellow-800/20" })
       ] })
     ] }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-end z-10", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-0.5", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[10px] uppercase tracking-wider opacity-85 block font-bold", children: [
-          "Fee: ",
-          annualFee === 0 ? "No Annual Fee" : `$${annualFee}/yr`
+    (() => {
+      const isLightCard = normalizedIssuer.includes("apple") || normalizedIssuer.includes("american express") && normalizedName.includes("platinum") || normalizedIssuer.includes("amex") && normalizedName.includes("platinum");
+      return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-end z-10", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-0.5", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `text-[10px] uppercase tracking-wider block font-bold ${isLightCard ? "text-slate-800 opacity-90" : "text-white opacity-85"}`, children: [
+            "Fee: ",
+            annualFee === 0 ? "No Annual Fee" : `$${annualFee}/yr`
+          ] }),
+          bestRate && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: `text-[10px] font-black block leading-none ${isLightCard ? "text-slate-950" : "text-emerald-350"}`, children: [
+            "Top Rate: ",
+            bestRate
+          ] })
         ] }),
-        bestRate && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[10px] font-black text-emerald-300 block leading-none", children: [
-          "Top Rate: ",
-          bestRate
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center", children: renderNetworkLogo() })
-    ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center", children: renderNetworkLogo() })
+      ] });
+    })(),
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute -right-12 -bottom-12 w-28 h-28 bg-white/5 rounded-full blur-xl pointer-events-none" })
   ] });
 }

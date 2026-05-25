@@ -1499,6 +1499,8 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
         const mockOffers = [
             {
                 offerId: 1,
+                cardId: 101,
+                cardName: "Chase Sapphire Preferred",
                 merchantName: "Amazon Fresh",
                 offerDescription: "10% back on groceries at Amazon Fresh",
                 cashbackRate: 10.0,
@@ -1509,6 +1511,8 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
             },
             {
                 offerId: 2,
+                cardId: 102,
+                cardName: "American Express Gold Card",
                 merchantName: "Food Lion",
                 offerDescription: "7% back on groceries at Food Lion",
                 cashbackRate: 7.0,
@@ -1519,6 +1523,8 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
             },
             {
                 offerId: 3,
+                cardId: 101,
+                cardName: "Chase Sapphire Preferred",
                 merchantName: "Nike",
                 offerDescription: "Spend $150 get $25 statement credit back",
                 cashbackAmount: 2500,
@@ -1530,6 +1536,8 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
             },
             {
                 offerId: 4,
+                cardId: 102,
+                cardName: "American Express Gold Card",
                 merchantName: "Rayban",
                 offerDescription: "Spend $50 get $25 back on Rayban Glasses",
                 cashbackAmount: 2500,
@@ -1541,6 +1549,8 @@ function getMockResponse(path: string, query: any, bodyStr: any): Response | nul
             },
             {
                 offerId: 5,
+                cardId: 103,
+                cardName: "Apple Card",
                 merchantName: "Uber",
                 offerDescription: "5% back on rides and Uber Eats",
                 cashbackRate: 5.0,

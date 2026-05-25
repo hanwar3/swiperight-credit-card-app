@@ -237,7 +237,7 @@ export default function Cards() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="comprehensive" className="flex items-center space-x-2">
             <CreditCardIcon className="h-4 w-4" />
             <span>All Cards Database</span>
@@ -249,6 +249,10 @@ export default function Cards() {
           <TabsTrigger value="expiring" className="flex items-center space-x-2" disabled={!user}>
             <Calendar className="h-4 w-4" />
             <span>Reward Deadlines</span>
+          </TabsTrigger>
+          <TabsTrigger value="portfolio-offers" className="flex items-center space-x-2" disabled={!user}>
+            <Clock className="h-4 w-4" />
+            <span>My Expiring Offers</span>
           </TabsTrigger>
         </TabsList>
 
@@ -581,6 +585,74 @@ export default function Cards() {
             </div>
           </div>
         </TabsContent>
+
+        <TabsContent value="portfolio-offers" className="space-y-6">
+          <div className="bg-gradient-to-r from-orange-500/10 via-red-500/5 to-transparent p-6 rounded-3xl border border-orange-500/15 space-y-2">
+            <div className="flex items-center space-x-2 text-orange-700">
+              <Clock className="h-5 w-5" />
+              <h2 className="text-lg font-bold">My Portfolio's Expiring Merchant Offers</h2>
+            </div>
+            <p className="text-sm text-gray-600 max-w-2xl">
+              These are targeted custom merchant deals that are active and expiring **strictly on the credit cards in your wallet portfolio**.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {(() => {
+              const portfolioCardIds = portfolioCards.map(pc => pc && pc.card ? pc.card.id : 0).filter(Boolean);
+              
+              // Filter offers that belong to any card in the user's portfolio
+              const targetedOffers = merchantOffers.filter((offer: any) => 
+                offer && offer.cardId && portfolioCardIds.includes(offer.cardId)
+              );
+
+              if (isOffersLoading) {
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[...Array(2)].map((_, i) => (
+                      <div key={i} className="h-28 bg-gray-150 animate-pulse rounded-2xl border border-slate-100" />
+                    ))}
+                  </div>
+                );
+              }
+
+              if (targetedOffers.length === 0) {
+                return (
+                  <Card className="border border-dashed border-slate-200 rounded-3xl p-8 text-center bg-slate-50/50">
+                    <p className="text-sm text-gray-500 font-medium">No expiring merchant offers found for the cards currently in your portfolio wallet.</p>
+                    <p className="text-xs text-slate-400 mt-1">Make sure you have added cards like <b>Chase Sapphire Preferred</b>, <b>American Express Gold Card</b>, or <b>Apple Card</b> to see synced, active merchant deals.</p>
+                  </Card>
+                );
+              }
+
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {targetedOffers.map((offer: any) => {
+                    const isUrgent = offer.offerDescription.toLowerCase().includes("10%") || offer.offerDescription.toLowerCase().includes("10") || offer.offerDescription.toLowerCase().includes("$25");
+                    return (
+                      <Card key={offer.offerId} className="border border-slate-150 rounded-2xl p-5 bg-gradient-to-br from-white to-slate-50/20 hover:shadow-lg transition-all flex flex-col justify-between space-y-4 shadow-sm">
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs uppercase font-extrabold tracking-wider text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100">{offer.cardName}</span>
+                            <Badge className={isUrgent ? "bg-red-150 text-red-700 text-[10px] font-bold" : "bg-teal-100 text-teal-700 text-[10px] font-bold"}>
+                              {isUrgent ? "Expiring Soon!" : "Active"}
+                            </Badge>
+                          </div>
+                          <h4 className="text-sm font-black text-slate-800 pt-1">{offer.merchantName}</h4>
+                          <p className="text-xs text-slate-600 leading-relaxed font-medium">{offer.offerDescription}</p>
+                        </div>
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-100/60 text-[10px] font-bold">
+                          <span className="text-red-600 font-extrabold bg-red-50/60 px-2 py-0.5 rounded-full border border-red-100">Ends: {new Date(offer.endDate).toLocaleDateString()}</span>
+                          <span className="text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">Synced Wallet Promo</span>
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );
@@ -727,21 +799,28 @@ function CreditCardRender({
       </div>
 
       {/* Bottom Section */}
-      <div className="flex justify-between items-end z-10">
-        <div className="space-y-0.5">
-          <span className="text-[10px] uppercase tracking-wider opacity-85 block font-bold">
-            Fee: {annualFee === 0 ? 'No Annual Fee' : `$${annualFee}/yr`}
-          </span>
-          {bestRate && (
-            <span className="text-[10px] font-black text-emerald-300 block leading-none">
-              Top Rate: {bestRate}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center justify-center">
-          {renderNetworkLogo()}
-        </div>
-      </div>
+      {(() => {
+        const isLightCard = normalizedIssuer.includes('apple') || 
+                            (normalizedIssuer.includes('american express') && normalizedName.includes('platinum')) ||
+                            (normalizedIssuer.includes('amex') && normalizedName.includes('platinum'));
+        return (
+          <div className="flex justify-between items-end z-10">
+            <div className="space-y-0.5">
+              <span className={`text-[10px] uppercase tracking-wider block font-bold ${isLightCard ? 'text-slate-800 opacity-90' : 'text-white opacity-85'}`}>
+                Fee: {annualFee === 0 ? 'No Annual Fee' : `$${annualFee}/yr`}
+              </span>
+              {bestRate && (
+                <span className={`text-[10px] font-black block leading-none ${isLightCard ? 'text-slate-950' : 'text-emerald-350'}`}>
+                  Top Rate: {bestRate}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center justify-center">
+              {renderNetworkLogo()}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Futuristic soft background circle mesh */}
       <div className="absolute -right-12 -bottom-12 w-28 h-28 bg-white/5 rounded-full blur-xl pointer-events-none" />

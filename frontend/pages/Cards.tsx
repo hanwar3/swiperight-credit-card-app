@@ -622,12 +622,14 @@ function CreditCardRender({
   name, 
   issuer, 
   network, 
-  imageUrl 
+  annualFee,
+  bestRate
 }: { 
   name: string; 
   issuer: string; 
   network: string; 
-  imageUrl?: string; 
+  annualFee?: number;
+  bestRate?: string;
 }) {
   const [imageError, setImageError] = useState(false);
   const normalizedIssuer = issuer.toLowerCase();
@@ -727,8 +729,14 @@ function CreditCardRender({
       {/* Bottom Section */}
       <div className="flex justify-between items-end z-10">
         <div className="space-y-0.5">
-          <span className="text-[8px] uppercase tracking-widest opacity-70 block font-semibold">Wallet Wingman</span>
-          <span className="text-[9px] font-mono tracking-widest opacity-85 block">•••• •••• •••• 2026</span>
+          <span className="text-[10px] uppercase tracking-wider opacity-85 block font-bold">
+            Fee: {annualFee === 0 ? 'No Annual Fee' : `$${annualFee}/yr`}
+          </span>
+          {bestRate && (
+            <span className="text-[10px] font-black text-emerald-300 block leading-none">
+              Top Rate: {bestRate}
+            </span>
+          )}
         </div>
         <div className="flex items-center justify-center">
           {renderNetworkLogo()}
@@ -784,7 +792,8 @@ function ComprehensiveCardComponent({
           name={card.name} 
           issuer={card.issuer} 
           network={card.network} 
-          imageUrl={card.imageUrl} 
+          annualFee={card.annualFee}
+          bestRate={bestCategory.cashbackRate > 0 ? `${bestCategory.cashbackRate}% ${bestCategory.category}` : undefined}
         />
       </div>
 
@@ -936,7 +945,8 @@ function PortfolioCardComponent({ userCard }: { userCard: UserCard }) {
           name={card.name} 
           issuer={card.issuer} 
           network={card.network} 
-          imageUrl={card.imageUrl} 
+          annualFee={card.annualFee}
+          bestRate={bestCategory.cashbackRate > 0 ? `${bestCategory.cashbackRate}% ${bestCategory.category}` : undefined}
         />
       </div>
 

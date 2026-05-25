@@ -32819,7 +32819,8 @@ function CreditCardRender({
   name,
   issuer,
   network,
-  imageUrl
+  annualFee,
+  bestRate
 }) {
   const [imageError, setImageError] = reactExports.useState(false);
   const normalizedIssuer = issuer.toLowerCase();
@@ -32901,8 +32902,14 @@ function CreditCardRender({
     ] }),
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-end z-10", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-0.5", children: [
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[8px] uppercase tracking-widest opacity-70 block font-semibold", children: "Wallet Wingman" }),
-        /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "text-[9px] font-mono tracking-widest opacity-85 block", children: "•••• •••• •••• 2026" })
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[10px] uppercase tracking-wider opacity-85 block font-bold", children: [
+          "Fee: ",
+          annualFee === 0 ? "No Annual Fee" : `$${annualFee}/yr`
+        ] }),
+        bestRate && /* @__PURE__ */ jsxRuntimeExports.jsxs("span", { className: "text-[10px] font-black text-emerald-300 block leading-none", children: [
+          "Top Rate: ",
+          bestRate
+        ] })
       ] }),
       /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center justify-center", children: renderNetworkLogo() })
     ] }),
@@ -32942,7 +32949,8 @@ function ComprehensiveCardComponent({
         name: card.name,
         issuer: card.issuer,
         network: card.network,
-        imageUrl: card.imageUrl
+        annualFee: card.annualFee,
+        bestRate: bestCategory.cashbackRate > 0 ? `${bestCategory.cashbackRate}% ${bestCategory.category}` : void 0
       }
     ) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pt-4 pb-2 px-5", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-start justify-between", children: [
@@ -33066,7 +33074,8 @@ function PortfolioCardComponent({ userCard }) {
         name: card.name,
         issuer: card.issuer,
         network: card.network,
-        imageUrl: card.imageUrl
+        annualFee: card.annualFee,
+        bestRate: bestCategory.cashbackRate > 0 ? `${bestCategory.cashbackRate}% ${bestCategory.category}` : void 0
       }
     ) }),
     /* @__PURE__ */ jsxRuntimeExports.jsx(CardHeader, { className: "pt-4 pb-2 px-5", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex items-center space-x-3", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex-1", children: [
@@ -33605,12 +33614,9 @@ function MiniCreditCardRender({ name, issuer }) {
     return "from-teal-600 to-emerald-800 text-white";
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: `w-16 h-10 rounded-lg p-1.5 flex flex-col justify-between overflow-hidden bg-gradient-to-br text-[7px] font-black uppercase tracking-tighter leading-none shadow-sm ${getCardStyle()}`, children: [
-    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-70 text-[5px] block truncate", children: issuer }),
-    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "block truncate font-bold text-[6px] leading-tight mt-0.5", children: name.split(" ").pop() }),
-    /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex justify-between items-end mt-1", children: [
-      /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-60 font-mono text-[4px]", children: "••••" }),
-      /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 bg-yellow-400/80 rounded-sm" })
-    ] })
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "opacity-70 text-[5.5px] block truncate", children: issuer }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "block truncate font-bold text-[6.5px] leading-tight mt-0.5", children: name.split(" ").pop() }),
+    /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "flex justify-end mt-1", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "w-1.5 h-1.5 bg-yellow-400/85 rounded-sm shadow-inner" }) })
   ] });
 }
 function RecommendationCard({

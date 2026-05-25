@@ -562,11 +562,10 @@ function MiniCreditCardRender({ name, issuer }: { name: string; issuer: string }
 
   return (
     <div className={`w-16 h-10 rounded-lg p-1.5 flex flex-col justify-between overflow-hidden bg-gradient-to-br text-[7px] font-black uppercase tracking-tighter leading-none shadow-sm ${getCardStyle()}`}>
-      <span className="opacity-70 text-[5px] block truncate">{issuer}</span>
-      <span className="block truncate font-bold text-[6px] leading-tight mt-0.5">{name.split(' ').pop()}</span>
-      <div className="flex justify-between items-end mt-1">
-        <span className="opacity-60 font-mono text-[4px]">••••</span>
-        <div className="w-1.5 h-1.5 bg-yellow-400/80 rounded-sm" />
+      <span className="opacity-70 text-[5.5px] block truncate">{issuer}</span>
+      <span className="block truncate font-bold text-[6.5px] leading-tight mt-0.5">{name.split(' ').pop()}</span>
+      <div className="flex justify-end mt-1">
+        <div className="w-1.5 h-1.5 bg-yellow-400/85 rounded-sm shadow-inner" />
       </div>
     </div>
   );

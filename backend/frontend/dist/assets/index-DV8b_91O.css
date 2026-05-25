@@ -2299,13 +2299,13 @@
     background-color: var(--color-yellow-100);
   }
 
-  .bg-yellow-400\/80 {
-    background-color: #fac800cc;
+  .bg-yellow-400\/85 {
+    background-color: #fac800d9;
   }
 
   @supports (color: color-mix(in lab, red, red)) {
-    .bg-yellow-400\/80 {
-      background-color: color-mix(in oklab, var(--color-yellow-400) 80%, transparent);
+    .bg-yellow-400\/85 {
+      background-color: color-mix(in oklab, var(--color-yellow-400) 85%, transparent);
     }
   }
 
@@ -3280,16 +3280,12 @@
     line-height: var(--tw-leading, var(--text-xs--line-height));
   }
 
-  .text-\[4px\] {
-    font-size: 4px;
+  .text-\[5\.5px\] {
+    font-size: 5.5px;
   }
 
-  .text-\[5px\] {
-    font-size: 5px;
-  }
-
-  .text-\[6px\] {
-    font-size: 6px;
+  .text-\[6\.5px\] {
+    font-size: 6.5px;
   }
 
   .text-\[7\.5px\] {
@@ -3298,10 +3294,6 @@
 
   .text-\[7px\] {
     font-size: 7px;
-  }
-
-  .text-\[8px\] {
-    font-size: 8px;
   }
 
   .text-\[9px\] {
@@ -3428,6 +3420,10 @@
 
   .text-card-foreground {
     color: var(--card-foreground);
+  }
+
+  .text-emerald-300 {
+    color: var(--color-emerald-300);
   }
 
   .text-emerald-400 {
